@@ -1,0 +1,7 @@
+# Kontent
+
+## Package
+```
+./gradlew build
+```
+

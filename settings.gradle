@@ -1,0 +1,5 @@
+rootProject.name = 'Kontent'
+
+include 'kontent-core'
+include 'kontent-theme-default'
+include 'kontent-example'
