@@ -21,14 +21,12 @@ class KontentTest {
     fun `minimal site is a single page`() {
         val site = Kontent().build()
         val first: Page = site.pages.first()
-        assertThat(first, allOf(matchesUri(Uri.of("/my-page")), matchesPage(Html("""<body>My site<h1>My Page</h1><p>My <strong>content</strong></p></body>"""))))
+        assertThat(first, matchesPage(Page(Uri.of("/my-page"), Html("""<body>My site<h1>My Page</h1><p>My <strong>content</strong></p></body>"""))))
     }
 }
 
 
-//fun matchesPage(expected: Page) = allOf(has(Page::uri, equalTo(expected.uri)), matchesHtml(expected.content))
-fun matchesUri(expected:Uri) = has(Page::uri, equalTo(expected))
-fun matchesPage(expected: Html): Matcher<Page> = has(Page::content, matchesHtml(expected))
+fun matchesPage(expected: Page) = allOf(has(Page::uri, equalTo(expected.uri)), has(Page::content, matchesHtml(expected.content)))
 
 fun matchesHtml(expected: Html): Matcher<Html> =
         object : Matcher<Html> {
