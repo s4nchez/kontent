@@ -3,6 +3,10 @@ package org.github.s4nchez
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
+import org.http4k.core.HttpHandler
+import org.http4k.core.Response
+import org.http4k.core.Status
+import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Uri
 import java.io.File
 
@@ -21,6 +25,14 @@ class Kontent {
                 }
 
         return Site(pageSources.toSet())
+    }
+}
+
+fun Site.asHttpHandler(): HttpHandler {
+    val siteMap = pages.map { it.uri.path to it }.toMap()
+    return { request ->
+        siteMap[request.uri.path]?.let { Response(Status.OK).body(it.content.raw) }
+                ?: Response(NOT_FOUND)
     }
 }
 
