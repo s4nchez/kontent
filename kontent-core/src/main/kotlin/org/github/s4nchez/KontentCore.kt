@@ -12,12 +12,12 @@ class Kontent {
         val handlebars = Handlebars(ClassPathTemplateLoader("/mvp/theme"))
         val template: Template = handlebars.compile("index")
 
-        val pageSources =  File("src/main/resources/mvp").walkTopDown().filter { it.name.endsWith(".md") }
+        val pageSources = File("src/main/resources/mvp").walkTopDown().filter { it.name.endsWith(".md") }
                 .map {
                     val markdown = Markdown(it.readText())
                     val contentHtml = markdownConversion.convert(markdown)
                     val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-                    Page(Uri.of("/"+it.name.removeSuffix(".md")), Html(compiledPage))
+                    Page(Uri.of("/${it.name.removeSuffix(".md")}"), Html(compiledPage))
                 }
 
         return Site(pageSources.toSet())
