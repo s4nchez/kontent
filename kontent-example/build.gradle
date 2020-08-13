@@ -1,4 +1,5 @@
 dependencies {
     implementation project(":kontent-core")
+    implementation "org.http4k:http4k-core:${http4kVersion}"
     implementation project(":kontent-theme-default")
 }
