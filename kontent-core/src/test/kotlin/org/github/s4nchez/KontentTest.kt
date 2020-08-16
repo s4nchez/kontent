@@ -25,11 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 class KontentTest {
 
     @Test
-    fun `Ping test`() {
-        assertEquals(app(Request(GET, "/ping")), Response(OK).body("pong"))
-    }
-
-    @Test
     fun `minimal site is a single page`() {
         val site = Kontent().build()
         val first: Page = site.pages.first()
