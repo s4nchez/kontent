@@ -12,8 +12,6 @@ buildscript {
     }
 }
 
-
-
 repositories {
     mavenCentral()
     jcenter()
@@ -46,4 +44,3 @@ allprojects {
 
     apply plugin: 'kotlin'
 }
-

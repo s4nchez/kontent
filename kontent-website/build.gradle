@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(":kontent-core")
+    implementation "org.http4k:http4k-core:${http4kVersion}"
+    implementation project(":kontent-theme-default")
+}
+
+task serve(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = "ServeKt"
+}
