@@ -22,11 +22,11 @@ import java.io.StringWriter
 
 class Kontent {
     private val markdownConversion = MarkdownConversion()
-    fun build(baseUri: Uri = Uri.of("")): Site {
+    fun build(baseUri: Uri = Uri.of(""), sourcePath: ContentSourcePath): Site {
         val handlebars = Handlebars(ClassPathTemplateLoader("/mvp/theme"))
         val template: Template = handlebars.compile("index")
 
-        val pageSources = File("src/main/resources/mvp").walkTopDown().filter { it.name.endsWith(".md") }
+        val pageSources = File(sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
                 .map {
                     val markdown = Markdown(it.readText())
                     val contentHtml = markdownConversion.convert(markdown)
@@ -63,3 +63,5 @@ data class Site(val pages: Set<Page>, val baseUri: Uri)
 data class XmlDocument(val raw: String)
 data class Page(val uri: Uri, val content: Html)
 data class Html(val raw: String)
+
+data class ContentSourcePath(val value: String)
