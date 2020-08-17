@@ -68,7 +68,7 @@ data class Asset(val uri: Uri, val mapsTo: AssetPath)
 
 data class AssetPath(val value: String) : ValidatedPath(value)
 
-open class ValidatedPath(path: String) {
+open class ValidatedPath(val path: String) {
     init {
         if (!File(path).exists()) throw IllegalArgumentException("path ${File(path).absolutePath} does not exist")
     }

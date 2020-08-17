@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(ApprovalTest::class)
 class KontentTest {
 
-    private val sourcePath = ContentSourcePath("src/test/resources/mvp")
+    private val sourcePath = ContentSourcePath("src/test/resources/mvp/pages")
 
     private val configuration = SiteConfiguration(sourcePath, ThemePath("../kontent-theme-default/theme"), Uri.of("https://example.org"))
 
