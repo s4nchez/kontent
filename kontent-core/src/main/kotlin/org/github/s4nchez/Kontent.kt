@@ -20,9 +20,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val sourceDirectory = File(configuration.sourcePath.value)
-
-        val pageSources = sourceDirectory.walkTopDown().filter { it.name.endsWith(".md") }
+        val pageSources = File(configuration.sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
                 .map {
                     val markdown = Markdown(it.readText())
                     val contentHtml = markdownConversion.convert(markdown)
