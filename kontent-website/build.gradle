@@ -5,6 +5,8 @@ dependencies {
 }
 
 task serve(type: JavaExec){
+    workingDir = "../"
     classpath = sourceSets.main.runtimeClasspath
+
     main = "ServeKt"
 }
