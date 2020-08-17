@@ -5,6 +5,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.has
 import org.http4k.core.ContentType
+import org.http4k.core.ContentType.Companion.TEXT_HTML
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Status.Companion.OK
@@ -21,7 +22,11 @@ class KontentTest {
 
     private val sourcePath = ContentSourcePath("src/test/resources/mvp/pages")
 
-    private val configuration = SiteConfiguration(sourcePath, ThemePath("../kontent-theme-default/theme"), Uri.of("https://example.org"))
+    private val configuration = SiteConfiguration(
+        sourcePath = sourcePath,
+        themePath = ThemePath("../kontent-theme-default/theme"),
+        baseUri = Uri.of("https://example.org")
+    )
 
     @Test
     fun `minimal site is a single page`() {
@@ -41,26 +46,29 @@ class KontentTest {
     fun `site can be served`(approver: Approver) {
         val app = Kontent(configuration).build().asHttpHandler()
 
-        val response = app(Request(GET, "/my-page"))
-        assertThat(response, hasStatus(OK))
-        approver.assertApproved(response)
+        approver.assertApproved(app(Request(GET, "/my-page"))
+            .also {
+                assertThat(it, hasStatus(OK) and hasContentType(TEXT_HTML))
+            }
+        )
     }
 
     @Test
     fun `static content can be served`() {
         val app = Kontent(configuration).build().asHttpHandler()
 
-        val response = app(Request(GET, "/css/main.css") )
+        val response = app(Request(GET, "/css/main.css"))
+
         assertThat(response, hasStatus(OK) and hasContentType(ContentType("text/css")))
     }
 
     @Test
-    fun `generates sitemap`(approver: Approver){
-        val site = Kontent(configuration).build().asHttpHandler()
-        val sitemapResponse = site(Request(GET, "/sitemap.xml"))
+    fun `generates sitemap`(approver: Approver) {
+        val app = Kontent(configuration).build().asHttpHandler()
 
-        assertThat(sitemapResponse, hasStatus(OK) and hasContentType(ContentType.APPLICATION_XML))
-        approver.assertApproved(sitemapResponse)
+        approver.assertApproved(app(Request(GET, "/sitemap.xml")).also {
+            assertThat(it, hasStatus(OK) and hasContentType(ContentType.APPLICATION_XML))
+        })
     }
 }
 
