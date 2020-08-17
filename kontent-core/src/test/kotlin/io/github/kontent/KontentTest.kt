@@ -26,16 +26,15 @@ class KontentTest {
     @Test
     fun `minimal site is a single page`() {
         val site = Kontent(configuration).build()
-        val first: Page = site.pages.first()
-        assertThat(first, matchesPageUri(Uri.of("/my-page")))
+
+        assertThat(site.pages.first(), matchesPageUri(Uri.of("/my-page")))
     }
 
     @Test
     fun `site can include static content`() {
         val site = Kontent(configuration).build()
-        val first: Asset = site.assets.first()
-        println(site.assets)
-        assertThat(first, matchesAssetUri(Uri.of("/css/main.css")))
+
+        assertThat(site.assets.first(), matchesAssetUri(Uri.of("/css/main.css")))
     }
 
     @Test
