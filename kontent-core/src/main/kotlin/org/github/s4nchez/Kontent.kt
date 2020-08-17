@@ -21,19 +21,14 @@ import java.io.File
 import java.io.StringWriter
 
 
-class Kontent(
-        private val sourcePath: ContentSourcePath,
-        private val themePath: ThemePath,
-        private val baseUri: Uri = Uri.of(""),
-        private val events: OperationalEvents = NoOp
-) {
+class Kontent(private val configuration: SiteConfiguration, private val events: OperationalEvents = NoOp) {
     private val markdownConversion = MarkdownConversion()
 
     fun build(): Site {
-        val handlebars = Handlebars(FileTemplateLoader(themePath.value))
+        val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val file = File(sourcePath.value)
+        val file = File(configuration.sourcePath.value)
 
         val pageSources = file.walkTopDown().filter { it.name.endsWith(".md") }
                 .map {
@@ -43,7 +38,7 @@ class Kontent(
                     Page(Uri.of("/${it.name.removeSuffix(".md")}"), Html(compiledPage))
                 }
 
-        return Site(pageSources.toSet(), baseUri).also { events.emit(BuildSucceeded(it.pages.size)) }
+        return Site(pageSources.toSet(), configuration.baseUri).also { events.emit(BuildSucceeded(it.pages.size)) }
     }
 }
 
@@ -75,5 +70,17 @@ data class XmlDocument(val raw: String)
 data class Page(val uri: Uri, val content: Html)
 data class Html(val raw: String)
 
-data class ContentSourcePath(val value: String)
-data class ThemePath(val value: String)
+data class SiteConfiguration(
+        val sourcePath: ContentSourcePath,
+        val themePath: ThemePath,
+        val baseUri: Uri = Uri.of("")
+)
+
+data class ContentSourcePath(val value: String) : ValidatedPath(value)
+data class ThemePath(val value: String) : ValidatedPath(value)
+
+open class ValidatedPath(path: String) {
+    init {
+        if (!File(path).exists()) throw IllegalArgumentException("path ${File(path).absolutePath} does not exist")
+    }
+}
