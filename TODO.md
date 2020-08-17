@@ -1,5 +1,6 @@
 # TODO
 
+* static content
 * css generation
 * "hot reload" mode for regeneration on source changes
 * hash-based cache busting
