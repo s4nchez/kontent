@@ -80,13 +80,6 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class Site(val pages: Set<Page>, val baseUri: Uri, val assets: Set<Asset> = setOf())
-data class XmlDocument(val raw: String)
-data class Page(val uri: Uri, val content: Html)
-data class Html(val raw: String)
-data class Asset(val uri: Uri, val mapsTo: AssetPath)
-data class AssetPath(val value: String) : ValidatedPath(value)
-
 data class SiteConfiguration(
         val sourcePath: ContentSourcePath,
         val themePath: ThemePath,
@@ -94,7 +87,20 @@ data class SiteConfiguration(
 )
 
 data class ContentSourcePath(val value: String) : ValidatedPath(value)
+
 data class ThemePath(val value: String) : ValidatedPath(value)
+
+data class Site(val pages: Set<Page>, val baseUri: Uri, val assets: Set<Asset> = setOf())
+
+data class XmlDocument(val raw: String)
+
+data class Page(val uri: Uri, val content: Html)
+
+data class Html(val raw: String)
+
+data class Asset(val uri: Uri, val mapsTo: AssetPath)
+
+data class AssetPath(val value: String) : ValidatedPath(value)
 
 open class ValidatedPath(path: String) {
     init {
