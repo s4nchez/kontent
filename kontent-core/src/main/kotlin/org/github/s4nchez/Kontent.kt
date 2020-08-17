@@ -6,15 +6,7 @@ import com.github.jknack.handlebars.io.FileTemplateLoader
 import org.github.s4nchez.OperationalEvents.Companion.NoOp
 import org.github.s4nchez.models.Sitemap
 import org.github.s4nchez.models.Url
-import org.http4k.core.ContentType
-import org.http4k.core.HttpHandler
-import org.http4k.core.MimeTypes
-import org.http4k.core.Response
-import org.http4k.core.Status.Companion.NOT_FOUND
-import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Uri
-import org.http4k.core.with
-import org.http4k.lens.Header.CONTENT_TYPE
 import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
 import java.io.File
@@ -44,30 +36,6 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
                 }
 
         return Site(pageSources.toSet(), configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
-    }
-}
-
-fun Kontent.asHttpHandler(): HttpHandler = { request -> build().asHttpHandler()(request) }
-
-fun Site.asHttpHandler(): HttpHandler {
-    val allPages = pages.map { it.uri.path to it }.toMap()
-    val staticContent = assets.map { it.uri.path to it }.toMap()
-
-    val extMap = MimeTypes()
-    return { request ->
-        when (request.uri.path) {
-            "/sitemap.xml" -> Response(OK).with(CONTENT_TYPE of ContentType.APPLICATION_XML).body(sitemap().raw)
-            in staticContent -> {
-                val file = File((staticContent[request.uri.path]
-                        ?: error("content not found: ${request.uri.path}")).mapsTo.value)
-                Response(OK).with(CONTENT_TYPE of extMap.forFile(request.uri.path)).body(file.readBytes().inputStream())
-            }
-            in allPages -> {
-                val content = (allPages[request.uri.path] ?: error("page not found: ${request.uri.path}")).content.raw
-                Response(OK).with(CONTENT_TYPE of ContentType.TEXT_HTML).body(content)
-            }
-            else -> Response(NOT_FOUND)
-        }
     }
 }
 
