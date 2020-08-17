@@ -3,6 +3,7 @@ package org.github.s4nchez
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
+import org.github.s4nchez.OperationalEvents.Companion.NoOp
 import org.github.s4nchez.models.Sitemap
 import org.github.s4nchez.models.Url
 import org.http4k.core.ContentType
@@ -20,13 +21,17 @@ import java.io.File
 import java.io.StringWriter
 
 
-class Kontent {
+class Kontent(private val events: OperationalEvents = NoOp) {
     private val markdownConversion = MarkdownConversion()
+
     fun build(sourcePath: ContentSourcePath, themePath: ThemePath, baseUri: Uri = Uri.of("")): Site {
         val handlebars = Handlebars(FileTemplateLoader(themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val pageSources = File(sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
+        val file = File(sourcePath.value)
+
+
+        val pageSources = file.walkTopDown().filter { it.name.endsWith(".md") }
                 .map {
                     val markdown = Markdown(it.readText())
                     val contentHtml = markdownConversion.convert(markdown)
@@ -34,7 +39,7 @@ class Kontent {
                     Page(Uri.of("/${it.name.removeSuffix(".md")}"), Html(compiledPage))
                 }
 
-        return Site(pageSources.toSet(), baseUri)
+        return Site(pageSources.toSet(), baseUri).also { events.emit(BuildSucceeded(it.pages.size)) }
     }
 }
 
