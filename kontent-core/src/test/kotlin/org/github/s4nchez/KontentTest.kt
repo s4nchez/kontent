@@ -27,7 +27,15 @@ class KontentTest {
     fun `minimal site is a single page`() {
         val site = Kontent(configuration).build()
         val first: Page = site.pages.first()
-        assertThat(first, matchesUri(Uri.of("/my-page")))
+        assertThat(first, matchesPageUri(Uri.of("/my-page")))
+    }
+
+    @Test
+    fun `site can include static content`() {
+        val site = Kontent(configuration).build()
+        val first: Asset = site.assets.first()
+        println(site.assets)
+        assertThat(first, matchesAssetUri(Uri.of("/css/main.css")))
     }
 
     @Test
@@ -40,6 +48,14 @@ class KontentTest {
     }
 
     @Test
+    fun `static content can be served`() {
+        val app = Kontent(configuration).build().asHttpHandler()
+
+        val response = app(Request(GET, "/css/main.css") )
+        assertThat(response, hasStatus(OK) and hasContentType(ContentType("text/css")))
+    }
+
+    @Test
     fun `generates sitemap`(approver: Approver){
         val site = Kontent(configuration).build().asHttpHandler()
         val sitemapResponse = site(Request(GET, "/sitemap.xml"))
@@ -49,4 +65,5 @@ class KontentTest {
     }
 }
 
-fun matchesUri(expected: Uri) = has(Page::uri, equalTo(expected))
+fun matchesPageUri(expected: Uri) = has(Page::uri, equalTo(expected))
+fun matchesAssetUri(expected: Uri) = has(Asset::uri, equalTo(expected))

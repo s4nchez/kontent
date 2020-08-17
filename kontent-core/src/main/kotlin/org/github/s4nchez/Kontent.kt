@@ -8,6 +8,7 @@ import org.github.s4nchez.models.Sitemap
 import org.github.s4nchez.models.Url
 import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
+import org.http4k.core.MimeTypes
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.NOT_FOUND
@@ -28,9 +29,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val file = File(configuration.sourcePath.value)
+        val sourceDirectory = File(configuration.sourcePath.value)
 
-        val pageSources = file.walkTopDown().filter { it.name.endsWith(".md") }
+        val pageSources = sourceDirectory.walkTopDown().filter { it.name.endsWith(".md") }
                 .map {
                     val markdown = Markdown(it.readText())
                     val contentHtml = markdownConversion.convert(markdown)
@@ -38,7 +39,12 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
                     Page(Uri.of("/${it.name.removeSuffix(".md")}"), Html(compiledPage))
                 }
 
-        return Site(pageSources.toSet(), configuration.baseUri).also { events.emit(BuildSucceeded(it.pages.size)) }
+        val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md")}
+                .map {
+                    Asset(Uri.of("/" + it.path.replace(configuration.themePath.value, "").replace("^[/]*".toRegex(), "")), AssetPath(it.absolutePath))
+                }
+
+        return Site(pageSources.toSet(), configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 }
 
@@ -46,13 +52,19 @@ fun Kontent.asHttpHandler(): HttpHandler = { request -> build().asHttpHandler()(
 
 fun Site.asHttpHandler(): HttpHandler {
     val allPages = pages.map { it.uri.path to it }.toMap()
+    val staticContent = assets.map { it.uri.path to it }.toMap()
+
+    val extMap = MimeTypes()
     return { request ->
         when (request.uri.path) {
             "/sitemap.xml" -> Response(OK).with(CONTENT_TYPE of ContentType.APPLICATION_XML).body(sitemap().raw)
+            in staticContent -> {
+                val file = File(staticContent[request.uri.path]!!.mapsTo.value)
+                Response(OK).with(CONTENT_TYPE of extMap.forFile(request.uri.path)).body(file.readBytes().inputStream())
+            }
             else -> allPages[request.uri.path]?.let { Response(Status.OK).body(it.content.raw) }
                     ?: Response(NOT_FOUND)
         }
-
     }
 }
 
@@ -65,10 +77,12 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class Site(val pages: Set<Page>, val baseUri: Uri)
+data class Site(val pages: Set<Page>, val baseUri: Uri, val assets: Set<Asset> = setOf())
 data class XmlDocument(val raw: String)
 data class Page(val uri: Uri, val content: Html)
 data class Html(val raw: String)
+data class Asset(val uri: Uri, val mapsTo: AssetPath)
+data class AssetPath(val value: String) : ValidatedPath(value)
 
 data class SiteConfiguration(
         val sourcePath: ContentSourcePath,

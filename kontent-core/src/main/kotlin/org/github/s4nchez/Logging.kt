@@ -20,4 +20,4 @@ object PrintRawOperationalEvents : OperationalEvents {
 
 
 //
-data class BuildSucceeded(val numberOfPages:Int): OperationalEvent
+data class BuildSucceeded(val numberOfPages: Int, val numberOfAssets: Int): OperationalEvent
