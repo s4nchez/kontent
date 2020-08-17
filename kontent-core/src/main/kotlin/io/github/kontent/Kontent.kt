@@ -29,9 +29,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             }
 
         val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
-                .map {
-                    Asset(Uri.of("/" + it.path.replace(configuration.themePath.value, "").replace("^[/]*".toRegex(), "")), AssetPath(it.absolutePath))
-                }
+            .map {
+                Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath))
+            }
 
         return Site(pageSources.toSet(), configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
@@ -73,3 +73,10 @@ open class ValidatedPath(val path: String) {
         if (!File(path).exists()) throw IllegalArgumentException("path ${File(path).absolutePath} does not exist")
     }
 }
+
+fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.themePath))
+
+fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md"))
+
+private fun File.relativePath(basePath: ValidatedPath) =
+    "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
