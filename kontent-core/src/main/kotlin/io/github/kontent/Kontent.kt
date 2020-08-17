@@ -21,12 +21,12 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val template: Template = handlebars.compile("index")
 
         val pageSources = File(configuration.sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
-                .map {
-                    val markdown = Markdown(it.readText())
-                    val contentHtml = markdownConversion.convert(markdown)
-                    val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-                    Page(Uri.of("/${it.name.removeSuffix(".md")}"), Html(compiledPage))
-                }
+            .map {
+                val markdown = Markdown(it.readText())
+                val contentHtml = markdownConversion.convert(markdown)
+                val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
+                Page(it.resolvePageUri(configuration), Html(compiledPage))
+            }
 
         val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
                 .map {
