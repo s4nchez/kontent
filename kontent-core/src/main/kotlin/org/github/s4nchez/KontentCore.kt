@@ -47,6 +47,8 @@ class Kontent(
     }
 }
 
+fun Kontent.asHttpHandler(): HttpHandler = { request -> build().asHttpHandler()(request) }
+
 fun Site.asHttpHandler(): HttpHandler {
     val allPages = pages.map { it.uri.path to it }.toMap()
     return { request ->
