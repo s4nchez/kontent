@@ -1,4 +1,4 @@
-package org.github.s4nchez.models
+package io.github.kontent.models
 
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element

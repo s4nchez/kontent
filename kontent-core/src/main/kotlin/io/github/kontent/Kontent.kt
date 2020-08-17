@@ -1,11 +1,11 @@
-package org.github.s4nchez
+package io.github.kontent
 
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
-import org.github.s4nchez.OperationalEvents.Companion.NoOp
-import org.github.s4nchez.models.Sitemap
-import org.github.s4nchez.models.Url
+import io.github.kontent.OperationalEvents.Companion.NoOp
+import io.github.kontent.models.Sitemap
+import io.github.kontent.models.Url
 import org.http4k.core.Uri
 import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
@@ -47,9 +47,9 @@ fun Site.sitemap(): XmlDocument {
 }
 
 data class SiteConfiguration(
-        val sourcePath: ContentSourcePath,
-        val themePath: ThemePath,
-        val baseUri: Uri = Uri.of("")
+    val sourcePath: ContentSourcePath,
+    val themePath: ThemePath,
+    val baseUri: Uri = Uri.of("")
 )
 
 data class ContentSourcePath(val value: String) : ValidatedPath(value)

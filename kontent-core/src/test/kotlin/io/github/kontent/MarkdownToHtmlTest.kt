@@ -1,4 +1,4 @@
-package org.github.s4nchez
+package io.github.kontent
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo

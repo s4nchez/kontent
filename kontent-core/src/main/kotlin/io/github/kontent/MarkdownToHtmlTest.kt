@@ -1,4 +1,4 @@
-package org.github.s4nchez
+package io.github.kontent
 
 import org.commonmark.node.Node
 import org.commonmark.parser.Parser

@@ -1,4 +1,4 @@
-package org.github.s4nchez
+package io.github.kontent
 
 interface OperationalEvents {
     fun emit(event: OperationalEvent)

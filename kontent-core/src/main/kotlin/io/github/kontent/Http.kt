@@ -1,4 +1,4 @@
-package org.github.s4nchez
+package io.github.kontent
 
 import org.http4k.core.ContentType.Companion.APPLICATION_XML
 import org.http4k.core.ContentType.Companion.TEXT_HTML
