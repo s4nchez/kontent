@@ -1,11 +1,17 @@
 package org.github.s4nchez
 
-import com.natpryce.hamkrest.*
+import com.natpryce.hamkrest.MatchResult
+import com.natpryce.hamkrest.Matcher
+import com.natpryce.hamkrest.allOf
+import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.containsSubstring
+import com.natpryce.hamkrest.describe
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.has
 import org.http4k.core.ContentType
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
-import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Uri
 import org.http4k.hamkrest.hasBody
@@ -13,7 +19,6 @@ import org.http4k.hamkrest.hasContentType
 import org.http4k.hamkrest.hasStatus
 import org.http4k.testing.ApprovalTest
 import org.http4k.testing.Approver
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -24,21 +29,21 @@ class KontentTest {
 
     @Test
     fun `minimal site is a single page`() {
-        val site = Kontent().build(sourcePath = sourcePath)
+        val site = Kontent().build(sourcePath = sourcePath, themePath = ThemePath("kontent-theme-default/theme"))
         val first: Page = site.pages.first()
         assertThat(first, matchesPage(Page(Uri.of("/my-page"), Html("""<body>My site<h1>My Page</h1><p>My <strong>content</strong></p></body>"""))))
     }
 
     @Test
     fun `site can be served`() {
-        val app = Kontent().build(sourcePath = sourcePath).asHttpHandler()
+        val app = Kontent().build(sourcePath = sourcePath, themePath = ThemePath("kontent-theme-default/theme")).asHttpHandler()
 
         assertThat(app(Request(GET, "/my-page")), hasStatus(OK) and hasBody(containsSubstring("<h1>My Page</h1>")))
     }
 
     @Test
     fun `generates sitemap`(approver: Approver){
-        val site = Kontent().build(Uri.of("https://example.org"), sourcePath).asHttpHandler()
+        val site = Kontent().build(sourcePath, ThemePath("kontent-theme-default/theme"), Uri.of("https://example.org")).asHttpHandler()
         val sitemapResponse = site(Request(GET, "/sitemap.xml"))
 
         assertThat(sitemapResponse, hasStatus(OK) and hasContentType(ContentType.APPLICATION_XML))

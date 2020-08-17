@@ -2,7 +2,6 @@ package org.github.s4nchez
 
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
-import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import org.github.s4nchez.models.Sitemap
 import org.github.s4nchez.models.Url
@@ -23,8 +22,8 @@ import java.io.StringWriter
 
 class Kontent {
     private val markdownConversion = MarkdownConversion()
-    fun build(baseUri: Uri = Uri.of(""), sourcePath: ContentSourcePath): Site {
-        val handlebars = Handlebars(FileTemplateLoader("kontent-theme-default/theme"))
+    fun build(sourcePath: ContentSourcePath, themePath: ThemePath, baseUri: Uri = Uri.of("")): Site {
+        val handlebars = Handlebars(FileTemplateLoader(themePath.value))
         val template: Template = handlebars.compile("index")
 
         val pageSources = File(sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
@@ -66,3 +65,4 @@ data class Page(val uri: Uri, val content: Html)
 data class Html(val raw: String)
 
 data class ContentSourcePath(val value: String)
+data class ThemePath(val value: String)
