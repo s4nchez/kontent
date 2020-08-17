@@ -3,6 +3,7 @@ package org.github.s4nchez
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
+import com.github.jknack.handlebars.io.FileTemplateLoader
 import org.github.s4nchez.models.Sitemap
 import org.github.s4nchez.models.Url
 import org.http4k.core.ContentType
@@ -23,7 +24,7 @@ import java.io.StringWriter
 class Kontent {
     private val markdownConversion = MarkdownConversion()
     fun build(baseUri: Uri = Uri.of(""), sourcePath: ContentSourcePath): Site {
-        val handlebars = Handlebars(ClassPathTemplateLoader("/mvp/theme"))
+        val handlebars = Handlebars(FileTemplateLoader("kontent-theme-default/theme"))
         val template: Template = handlebars.compile("index")
 
         val pageSources = File(sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
