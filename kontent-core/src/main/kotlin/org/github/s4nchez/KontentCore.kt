@@ -21,15 +21,19 @@ import java.io.File
 import java.io.StringWriter
 
 
-class Kontent(private val events: OperationalEvents = NoOp) {
+class Kontent(
+        private val sourcePath: ContentSourcePath,
+        private val themePath: ThemePath,
+        private val baseUri: Uri = Uri.of(""),
+        private val events: OperationalEvents = NoOp
+) {
     private val markdownConversion = MarkdownConversion()
 
-    fun build(sourcePath: ContentSourcePath, themePath: ThemePath, baseUri: Uri = Uri.of("")): Site {
+    fun build(): Site {
         val handlebars = Handlebars(FileTemplateLoader(themePath.value))
         val template: Template = handlebars.compile("index")
 
         val file = File(sourcePath.value)
-
 
         val pageSources = file.walkTopDown().filter { it.name.endsWith(".md") }
                 .map {

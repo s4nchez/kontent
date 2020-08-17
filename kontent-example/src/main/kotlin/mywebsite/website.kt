@@ -8,5 +8,8 @@ import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 
 fun main() {
-    Kontent().build(sourcePath = ContentSourcePath("src/main/resources/mvp"), themePath = ThemePath("kontent-theme-default/theme")).asHttpHandler().asServer(SunHttp(8000)).start()
+    Kontent(
+            sourcePath = ContentSourcePath("src/main/resources/mvp"),
+            themePath = ThemePath("kontent-theme-default/theme")
+    ).build().asHttpHandler().asServer(SunHttp(8000)).start()
 }

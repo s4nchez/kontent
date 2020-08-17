@@ -7,8 +7,9 @@ import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 
 fun main() {
-    Kontent(PrintRawOperationalEvents).build(
+    Kontent(
             sourcePath = ContentSourcePath("kontent-website/src/main/resources/www/pages"),
-            themePath = ThemePath("kontent-theme-default/theme")
-    ).asHttpHandler().asServer(SunHttp(8000)).start()
+            themePath = ThemePath("kontent-theme-default/theme"),
+            events = PrintRawOperationalEvents
+    ).build().asHttpHandler().asServer(SunHttp(8000)).start()
 }

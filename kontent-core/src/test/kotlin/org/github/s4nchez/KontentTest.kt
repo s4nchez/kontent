@@ -29,21 +29,21 @@ class KontentTest {
 
     @Test
     fun `minimal site is a single page`() {
-        val site = Kontent().build(sourcePath = sourcePath, themePath = ThemePath("kontent-theme-default/theme"))
+        val site = Kontent(sourcePath = sourcePath, themePath = ThemePath("kontent-theme-default/theme")).build()
         val first: Page = site.pages.first()
         assertThat(first, matchesPage(Page(Uri.of("/my-page"), Html("""<body>My site<h1>My Page</h1><p>My <strong>content</strong></p></body>"""))))
     }
 
     @Test
     fun `site can be served`() {
-        val app = Kontent().build(sourcePath = sourcePath, themePath = ThemePath("kontent-theme-default/theme")).asHttpHandler()
+        val app = Kontent(sourcePath = sourcePath, themePath = ThemePath("kontent-theme-default/theme")).build().asHttpHandler()
 
         assertThat(app(Request(GET, "/my-page")), hasStatus(OK) and hasBody(containsSubstring("<h1>My Page</h1>")))
     }
 
     @Test
     fun `generates sitemap`(approver: Approver){
-        val site = Kontent().build(sourcePath, ThemePath("kontent-theme-default/theme"), Uri.of("https://example.org")).asHttpHandler()
+        val site = Kontent(sourcePath, ThemePath("kontent-theme-default/theme"), Uri.of("https://example.org")).build().asHttpHandler()
         val sitemapResponse = site(Request(GET, "/sitemap.xml"))
 
         assertThat(sitemapResponse, hasStatus(OK) and hasContentType(ContentType.APPLICATION_XML))
