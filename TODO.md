@@ -1,6 +1,6 @@
 # TODO
 
-* static content
+* split static content from theme
 * css generation
 * allow plain HTML pages
 * "hot reload" mode for regeneration on source changes
