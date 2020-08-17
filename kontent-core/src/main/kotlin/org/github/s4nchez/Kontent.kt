@@ -10,7 +10,6 @@ import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
 import org.http4k.core.MimeTypes
 import org.http4k.core.Response
-import org.http4k.core.Status
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Uri
@@ -39,7 +38,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
                     Page(Uri.of("/${it.name.removeSuffix(".md")}"), Html(compiledPage))
                 }
 
-        val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md")}
+        val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
                 .map {
                     Asset(Uri.of("/" + it.path.replace(configuration.themePath.value, "").replace("^[/]*".toRegex(), "")), AssetPath(it.absolutePath))
                 }
@@ -59,11 +58,15 @@ fun Site.asHttpHandler(): HttpHandler {
         when (request.uri.path) {
             "/sitemap.xml" -> Response(OK).with(CONTENT_TYPE of ContentType.APPLICATION_XML).body(sitemap().raw)
             in staticContent -> {
-                val file = File(staticContent[request.uri.path]!!.mapsTo.value)
+                val file = File((staticContent[request.uri.path]
+                        ?: error("content not found: ${request.uri.path}")).mapsTo.value)
                 Response(OK).with(CONTENT_TYPE of extMap.forFile(request.uri.path)).body(file.readBytes().inputStream())
             }
-            else -> allPages[request.uri.path]?.let { Response(Status.OK).body(it.content.raw) }
-                    ?: Response(NOT_FOUND)
+            in allPages -> {
+                val content = (allPages[request.uri.path] ?: error("page not found: ${request.uri.path}")).content.raw
+                Response(OK).with(CONTENT_TYPE of ContentType.TEXT_HTML).body(content)
+            }
+            else -> Response(NOT_FOUND)
         }
     }
 }
