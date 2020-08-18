@@ -20,20 +20,24 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val pageSources = File(configuration.sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
-            .map {
-                val markdown = Markdown(it.readText())
-                val contentHtml = markdownConversion.convert(markdown)
-                val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-                Page(it.resolvePageUri(configuration), Html(compiledPage))
-            }
+        val pages = File(configuration.sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
+            .map { generatePage(it, template, it.resolvePageUri(configuration)) }
+
+        val standalonePages = configuration.standalonePages.map { generatePage(File(it.sourcePath), template, it.uri) }
 
         val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
-            .map {
-                Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath))
-            }
+            .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
 
-        return Site(pageSources.toSet(), configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
+        val allPages = (pages + standalonePages).toSet()
+
+        return Site(allPages, configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
+    }
+
+    private fun generatePage(it: File, template: Template, targetUri: Uri): Page {
+        val markdown = Markdown(it.readText())
+        val contentHtml = markdownConversion.convert(markdown)
+        val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
+        return Page(targetUri, Html(compiledPage))
     }
 }
 
@@ -49,10 +53,13 @@ fun Site.sitemap(): XmlDocument {
 data class SiteConfiguration(
     val sourcePath: ContentSourcePath,
     val themePath: ThemePath,
-    val baseUri: Uri = Uri.of("")
+    val baseUri: Uri = Uri.of(""),
+    val standalonePages: Set<PageSource> = setOf()
 )
 
 data class ContentSourcePath(val value: String) : ValidatedPath(value)
+
+data class PageSource(val uri: Uri, val sourcePath: String) : ValidatedPath(sourcePath)
 
 data class ThemePath(val value: String) : ValidatedPath(value)
 

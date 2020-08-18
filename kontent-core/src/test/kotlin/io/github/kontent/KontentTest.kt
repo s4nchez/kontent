@@ -1,6 +1,7 @@
 package io.github.kontent
 
 import com.natpryce.hamkrest.and
+import com.natpryce.hamkrest.anyElement
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.has
@@ -40,6 +41,15 @@ class KontentTest {
         val site = Kontent(configuration).build()
 
         assertThat(site.assets.first(), matchesAssetUri(Uri.of("/css/main.css")))
+    }
+
+    @Test
+    fun `site can include reference to standalone pages outside content directory`(){
+        val source = PageSource(Uri.of("/random"), "src/test/resources/mvp/standalone-page/standalone.md")
+
+        val site = Kontent(configuration.copy(standalonePages = setOf(source))).build()
+
+        assertThat(site.pages, anyElement(matchesPageUri(Uri.of("/random"))))
     }
 
     @Test
