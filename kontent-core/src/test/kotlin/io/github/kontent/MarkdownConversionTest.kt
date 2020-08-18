@@ -8,6 +8,7 @@ import org.http4k.core.Status
 import org.http4k.core.Uri
 import org.http4k.testing.ApprovalTest
 import org.http4k.testing.Approver
+import org.http4k.testing.assertApproved
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -48,7 +49,7 @@ class MarkdownConversionTest {
         thank you
         """.trimIndent()))
 
-        approver.assertApproved(Response(Status.OK).body(document.raw))
+        approver.assertApproved(document.raw)
     }
 }
 
