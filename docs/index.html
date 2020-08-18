@@ -3,6 +3,7 @@
  <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/highlight.css">
 </head>
 <h1>Kontent</h1>
 <p>Kontent is an opinionated website generator written in Kotlin.</p>
@@ -21,24 +22,25 @@
 <li>Content creation: Markdown</li>
 </ul>
 <h2>Example</h2>
-<pre><code class="language-kotlin">package mywebsite
+<div class="highlight"><pre><span></span><span class="k">package</span> <span class="nn">mywebsite</span>
 
-import io.github.kontent.AssetSourcePath
-import io.github.kontent.ContentSourcePath
-import io.github.kontent.Kontent
-import io.github.kontent.SiteConfiguration
-import io.github.kontent.ThemePath
-import io.github.kontent.asHttpHandler
-import org.http4k.server.SunHttp
-import org.http4k.server.asServer
+<span class="k">import</span> <span class="nn">io.github.kontent.AssetSourcePath</span>
+<span class="k">import</span> <span class="nn">io.github.kontent.ContentSourcePath</span>
+<span class="k">import</span> <span class="nn">io.github.kontent.Kontent</span>
+<span class="k">import</span> <span class="nn">io.github.kontent.SiteConfiguration</span>
+<span class="k">import</span> <span class="nn">io.github.kontent.ThemePath</span>
+<span class="k">import</span> <span class="nn">io.github.kontent.asHttpHandler</span>
+<span class="k">import</span> <span class="nn">org.http4k.server.SunHttp</span>
+<span class="k">import</span> <span class="nn">org.http4k.server.asServer</span>
 
-fun main() {
-    Kontent(SiteConfiguration(
-        sourcePath = ContentSourcePath(&quot;src/main/resources/mvp&quot;),
-        themePath = ThemePath(&quot;kontent-theme-default/theme&quot;),
-        assertSourcePath = AssetSourcePath(&quot;../kontent-theme-default/assets&quot;)
-    )
-    ).build().asHttpHandler().asServer(SunHttp(8000)).start()
-}</code></pre>
+<span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Kontent</span><span class="p">(</span><span class="n">SiteConfiguration</span><span class="p">(</span>
+        <span class="n">sourcePath</span> <span class="p">=</span> <span class="n">ContentSourcePath</span><span class="p">(</span><span class="s">&quot;src/main/resources/mvp&quot;</span><span class="p">),</span>
+        <span class="n">themePath</span> <span class="p">=</span> <span class="n">ThemePath</span><span class="p">(</span><span class="s">&quot;kontent-theme-default/theme&quot;</span><span class="p">),</span>
+        <span class="n">assertSourcePath</span> <span class="p">=</span> <span class="n">AssetSourcePath</span><span class="p">(</span><span class="s">&quot;../kontent-theme-default/assets&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="p">).</span><span class="n">build</span><span class="p">().</span><span class="n">asHttpHandler</span><span class="p">().</span><span class="n">asServer</span><span class="p">(</span><span class="n">SunHttp</span><span class="p">(</span><span class="m">8000</span><span class="p">)).</span><span class="n">start</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
 
 </body>
