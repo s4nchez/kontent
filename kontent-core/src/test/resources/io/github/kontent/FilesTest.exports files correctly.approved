@@ -1,4 +1,5 @@
 /css/main.css
+/my-page/index.html
 ===============
 file:/css/main.css
 content:
@@ -6,3 +7,18 @@ body {
     background-color: #404040;
     color: #cfcfcf;
 }
+===============
+file:/my-page/index.html
+content:
+<body>
+<head>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<header>Kontent Default Theme</header>
+<h1>My Page</h1>
+<p>My <strong>content</strong></p>
+
+<footer>
+    Powered by Kontent
+</footer>
+</body>

@@ -7,6 +7,13 @@ fun Site.exportFiles(targetDirectory: TargetDirectory) {
         val destination = File(targetDirectory.value + "/" + it.uri.path)
         File(it.mapsTo.path).copyTo(destination)
     }
+
+    pages.forEach {
+        val destination = File(targetDirectory.value + "/" + it.uri.path + "/index.html")
+        destination.parentFile?.mkdirs()
+        destination.createNewFile()
+        destination.writeText(it.content.raw)
+    }
 }
 
 
