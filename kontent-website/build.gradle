@@ -8,5 +8,12 @@ task serve(type: JavaExec){
     workingDir = "../"
     classpath = sourceSets.main.runtimeClasspath
 
-    main = "ServeKt"
+    main = "Serve"
+}
+
+task buildWebsite(type: JavaExec){
+    workingDir = "../"
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = "Build"
 }
