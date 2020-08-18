@@ -21,17 +21,21 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val pages = File(configuration.sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
+        val pages = File(configuration.sourcePath.value).walkTopDown()
+            .filter { it.name.endsWith(".md") }
             .map { generatePage(it, template, it.resolvePageUri(configuration), configuration.urlMappings) }
 
-        val standalonePages = configuration.standalonePages.map { generatePage(File(it.sourcePath), template, it.uri, configuration.urlMappings) }
+        val standalonePages = configuration.standalonePages
+            .map { generatePage(File(it.sourcePath), template, it.uri, configuration.urlMappings) }
 
-        val assets = File(configuration.assertSourcePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
+        val assets = File(configuration.assertSourcePath.value).walkTopDown()
+            .filterNot { it.isDirectory || it.name.endsWith(".md") }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
 
         val allPages = (pages + standalonePages).toSet()
 
-        return Site(allPages, configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
+        return Site(allPages, configuration.baseUri, assets.toSet())
+            .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
     private fun generatePage(it: File, template: Template, targetUri: Uri, urlMappings: Map<Uri, Uri>): Page {
