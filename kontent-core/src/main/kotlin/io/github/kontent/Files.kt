@@ -16,5 +16,4 @@ fun Site.exportFiles(targetDirectory: TargetDirectory) {
     }
 }
 
-
 data class TargetDirectory(val value: String) : ValidatedPath(value)

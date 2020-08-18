@@ -2,15 +2,17 @@ package io.github.kontent
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.http4k.core.HttpHandler
-import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Uri
+import org.http4k.testing.ApprovalTest
+import org.http4k.testing.Approver
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 
+@ExtendWith(ApprovalTest::class)
 class MarkdownConversionTest {
     @Test
     fun `can convert file`() {
@@ -31,7 +33,7 @@ class MarkdownConversionTest {
     }
 
     @Test
-    fun `can render code from another source`() {
+    fun `can render code from another source`(approver: Approver) {
         val github = { request: Request ->
             println(request.uri)
             if (request.uri == Uri.of("https://raw.githubusercontent.com/http4k/http4k/master/src/docs/quickstart/example.kt"))
@@ -46,10 +48,7 @@ class MarkdownConversionTest {
         thank you
         """.trimIndent()))
 
-        assertThat(document, equalTo(Html("""<p>see the code:</p>
-<pre><code class="language-kotlin">val a = &quot;bob&quot;</code></pre>
-<p>thank you</p>
-""")))
+        approver.assertApproved(Response(Status.OK).body(document.raw))
     }
 }
 

@@ -2,7 +2,6 @@ package io.github.kontent
 
 import io.github.kontent.CodeFetcher.Companion.NoOp
 import org.commonmark.node.AbstractVisitor
-import org.commonmark.node.FencedCodeBlock
 import org.commonmark.node.HtmlInline
 import org.commonmark.node.Node
 import org.commonmark.node.Paragraph
@@ -49,9 +48,8 @@ class CodeFetchingPostProcessor(private val fetcher: CodeFetcher) : PostProcesso
                 val firstChild = node.firstChild
                 if (firstChild != null && firstChild is HtmlInline) {
                     firstChild.fetchParameters()?.apply {
-                        val newNode = FencedCodeBlock().apply {
-                            info = language
-                            literal = fetcher.fetch(uri)
+                        val newNode = HtmlInline().apply {
+                            literal = fetcher.fetch(uri)?.let { Pygments().highlight(it) }
                         }
                         node.appendChild(firstChild)
                         node.insertAfter(newNode)
@@ -68,7 +66,7 @@ class CodeFetchingPostProcessor(private val fetcher: CodeFetcher) : PostProcesso
 private fun HtmlInline.fetchParameters(): FetchParameters? {
     val html = Jsoup.parse(literal)
     val link = html.selectFirst("a")
-    if(link.attr("data-kontent-fetch") != "github") return null
+    if (link.attr("data-kontent-fetch") != "github") return null
     val fetchLang = link.attr("data-kontent-lang") ?: ""
     val sanitisedUrl = link.attr("href")
         .replace("github.com", "raw.githubusercontent.com")

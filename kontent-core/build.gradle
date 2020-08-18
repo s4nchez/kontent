@@ -5,6 +5,8 @@ dependencies {
     implementation 'com.atlassian.commonmark:commonmark:0.15.2'
     implementation 'org.simpleframework:simple-xml:2.7.1'
     implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.python:jython-standalone:2.7.2'
+    implementation 'org.pygments:pygments:2.5.2' // anything above this will break because python 2 support was dropped
     testImplementation "org.http4k:http4k-core:${http4kVersion}"
     testImplementation "org.http4k:http4k-template-handlebars:${http4kVersion}"
     testImplementation "org.http4k:http4k-testing-approval:${http4kVersion}"

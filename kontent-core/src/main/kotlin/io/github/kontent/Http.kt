@@ -7,12 +7,14 @@ import org.http4k.core.MimeTypes
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
+import org.http4k.core.then
 import org.http4k.core.with
+import org.http4k.filter.ServerFilters
 import org.http4k.lens.Header.CONTENT_TYPE
 import java.io.File
 
 
-fun Kontent.asHttpHandler(): HttpHandler = { request -> build().asHttpHandler()(request) }
+fun Kontent.asHttpHandler(): HttpHandler = ServerFilters.CatchAll().then { request -> build().asHttpHandler()(request) }
 
 fun Site.asHttpHandler(): HttpHandler {
     val allPages = pages.map { it.uri.path to it }.toMap()
