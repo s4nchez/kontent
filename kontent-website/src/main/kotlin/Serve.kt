@@ -1,5 +1,6 @@
 import io.github.kontent.ContentSourcePath
 import io.github.kontent.Kontent
+import io.github.kontent.PageSource
 import io.github.kontent.PrintRawOperationalEvents
 import io.github.kontent.SiteConfiguration
 import io.github.kontent.ThemePath
@@ -12,7 +13,8 @@ fun main() {
     Kontent(SiteConfiguration(
         sourcePath = ContentSourcePath("kontent-website/www/pages"),
         themePath = ThemePath("kontent-website/www/theme"),
-        urlMappings = mapOf(Uri.of("/home") to Uri.of("/"))),
+        standalonePages = setOf(PageSource(Uri.of("/"), "README.md"))
+    ),
         events = PrintRawOperationalEvents
     ).asHttpHandler().asServer(SunHttp(8000)).start()
 }
