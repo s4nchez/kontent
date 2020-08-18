@@ -13,3 +13,7 @@ Technologies of choice:
 * Language/runtime: Kotlin
 * Templating: Handlebars
 * Content creation: Markdown
+
+## Example
+
+<a href="https://github.com/s4nchez/kontent/blob/master/kontent-example/src/main/kotlin/mywebsite/website.kt" data-kontent-fetch="github" data-kontent-lang="kotlin">Starting a basic server locally</a>

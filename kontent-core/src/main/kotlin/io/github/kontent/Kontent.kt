@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.models.Sitemap
 import io.github.kontent.models.Url
+import org.http4k.client.JavaHttpClient
 import org.http4k.core.Uri
 import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
@@ -14,7 +15,7 @@ import java.io.StringWriter
 
 
 class Kontent(private val configuration: SiteConfiguration, private val events: OperationalEvents = NoOp) {
-    private val markdownConversion = MarkdownConversion()
+    private val markdownConversion = MarkdownConversion(HttpCodeFetcher(JavaHttpClient()))
 
     fun build(): Site {
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))

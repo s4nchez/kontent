@@ -11,7 +11,7 @@ import org.http4k.server.asServer
 
 fun main() {
     Kontent(SiteConfiguration(
-        sourcePath = ContentSourcePath("kontent-website/www/pages"),
+        sourcePath = ContentSourcePath("kontent-website/www"),
         themePath = ThemePath("kontent-website/www/theme"),
         standalonePages = setOf(PageSource(Uri.of("/"), "README.md"))
     ),
