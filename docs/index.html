@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Placeholder</title>
-</head>
 <body>
-Hello World
+<head>
+ <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<h1>Kontent</h1>
+<p>Kontent is an opinionated website generator written in Kotlin.</p>
+<p>Some principles are:</p>
+<ul>
+<li>Self-contained: it should not require any other tools (npm, for instance) to get a website from source to production.</li>
+<li>User friendly: all you need to get started is your source plus a single command.</li>
+<li>Clear split between content and layout/theme.</li>
+<li>Flexible runtime: generate static files for basics, or run it as a server for added features.</li>
+<li>GitHub as CMS: content can be edited directly in GH interface, and a website can refer to existing markdown/code.</li>
+</ul>
+<p>Technologies of choice:</p>
+<ul>
+<li>Language/runtime: Kotlin</li>
+<li>Templating: Handlebars</li>
+<li>Content creation: Markdown</li>
+</ul>
+<h2>Example</h2>
+<pre><code class="language-kotlin">package mywebsite
+
+import io.github.kontent.AssetSourcePath
+import io.github.kontent.ContentSourcePath
+import io.github.kontent.Kontent
+import io.github.kontent.SiteConfiguration
+import io.github.kontent.ThemePath
+import io.github.kontent.asHttpHandler
+import org.http4k.server.SunHttp
+import org.http4k.server.asServer
+
+fun main() {
+    Kontent(SiteConfiguration(
+        sourcePath = ContentSourcePath(&quot;src/main/resources/mvp&quot;),
+        themePath = ThemePath(&quot;kontent-theme-default/theme&quot;),
+        assertSourcePath = AssetSourcePath(&quot;../kontent-theme-default/assets&quot;)
+    )
+    ).build().asHttpHandler().asServer(SunHttp(8000)).start()
+}</code></pre>
+
 </body>
-</html>

@@ -26,7 +26,7 @@ class Build {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            site.build().exportFiles(TargetDirectory("kontent-website/build/website").ensureExists())
+            site.build().exportFiles(TargetDirectory("docs").ensureExists())
         }
 
         private fun TargetDirectory.ensureExists(): TargetDirectory = apply {
