@@ -26,6 +26,7 @@ class KontentTest {
     private val configuration = SiteConfiguration(
         sourcePath = sourcePath,
         themePath = ThemePath("../kontent-theme-default/theme"),
+        assertSourcePath = AssetSourcePath("../kontent-theme-default/assets"),
         baseUri = Uri.of("https://example.org")
     )
 

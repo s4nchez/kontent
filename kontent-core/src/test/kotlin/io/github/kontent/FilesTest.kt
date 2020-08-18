@@ -14,6 +14,7 @@ class FilesTest {
     private val configuration = SiteConfiguration(
         sourcePath = ContentSourcePath("src/test/resources/mvp/pages"),
         themePath = ThemePath("../kontent-theme-default/theme"),
+        assertSourcePath = AssetSourcePath("../kontent-theme-default/assets"),
         baseUri = Uri.of("https://example.org")
     )
 

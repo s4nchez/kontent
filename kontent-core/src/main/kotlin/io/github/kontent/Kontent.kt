@@ -26,7 +26,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
         val standalonePages = configuration.standalonePages.map { generatePage(File(it.sourcePath), template, it.uri, configuration.urlMappings) }
 
-        val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
+        val assets = File(configuration.assertSourcePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
 
         val allPages = (pages + standalonePages).toSet()
@@ -55,6 +55,7 @@ fun Site.sitemap(): XmlDocument {
 data class SiteConfiguration(
     val sourcePath: ContentSourcePath,
     val themePath: ThemePath,
+    val assertSourcePath: AssetSourcePath,
     val baseUri: Uri = Uri.of(""),
     val standalonePages: Set<PageSource> = setOf(),
     val urlMappings: Map<Uri, Uri> = mapOf()
@@ -63,6 +64,8 @@ data class SiteConfiguration(
 data class ContentSourcePath(val value: String) : ValidatedPath(value)
 
 data class PageSource(val uri: Uri, val sourcePath: String) : ValidatedPath(sourcePath)
+
+data class AssetSourcePath(val value: String):ValidatedPath(value)
 
 data class ThemePath(val value: String) : ValidatedPath(value)
 
@@ -84,7 +87,7 @@ open class ValidatedPath(val path: String) {
     }
 }
 
-fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.themePath))
+fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assertSourcePath))
 
 fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md"))
 

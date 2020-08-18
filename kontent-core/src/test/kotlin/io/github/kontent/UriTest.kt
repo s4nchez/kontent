@@ -9,7 +9,8 @@ import java.io.File
 class UriTest {
     private val configuration = SiteConfiguration(
         sourcePath = ContentSourcePath("src/test/resources"),
-        themePath = ThemePath("../kontent-theme-default/theme")
+        themePath = ThemePath("../kontent-theme-default/theme"),
+        assertSourcePath = AssetSourcePath("../kontent-theme-default/assets")
     )
 
     @Test
@@ -38,5 +39,5 @@ class UriTest {
 
     private fun source(path: String) = File(configuration.sourcePath.value + path)
 
-    private fun asset(path: String) = File(configuration.themePath.value + path)
+    private fun asset(path: String) = File(configuration.assertSourcePath.value + path)
 }

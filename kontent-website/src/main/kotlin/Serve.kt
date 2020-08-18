@@ -1,3 +1,4 @@
+import io.github.kontent.AssetSourcePath
 import io.github.kontent.ContentSourcePath
 import io.github.kontent.Kontent
 import io.github.kontent.PageSource
@@ -13,6 +14,7 @@ fun main() {
     Kontent(SiteConfiguration(
         sourcePath = ContentSourcePath("kontent-website/www"),
         themePath = ThemePath("kontent-website/www/theme"),
+        assertSourcePath = AssetSourcePath("kontent-website/www/assets"),
         standalonePages = setOf(PageSource(Uri.of("/"), "README.md"))
     ),
         events = PrintRawOperationalEvents
