@@ -7,6 +7,7 @@ Some principles are:
 * User friendly: all you need to get started is your source plus a single command.
 * Clear split between content and layout/theme.
 * Flexible runtime: generate static files for basics, or run it as a server for added features.
+* GitHub as CMS: content can be edited directly in GH interface, and a website can refer to existing markdown/code.  
 
 Technologies of choice:
 * Language/runtime: Kotlin
