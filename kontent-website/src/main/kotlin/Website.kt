@@ -22,7 +22,6 @@ private val site = Kontent(
         standalonePages = setOf(PageSource(Uri.of("/"), "README.md"))
     ), events = PrintRawOperationalEvents)
 
-
 class Build {
     companion object {
         @JvmStatic
@@ -35,7 +34,6 @@ class Build {
         }
     }
 }
-
 
 class Serve {
     companion object {
