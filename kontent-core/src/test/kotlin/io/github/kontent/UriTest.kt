@@ -1,12 +1,7 @@
-package org.github.s4nchez
+package io.github.kontent
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import io.github.kontent.ContentSourcePath
-import io.github.kontent.SiteConfiguration
-import io.github.kontent.ThemePath
-import io.github.kontent.resolveAssetUri
-import io.github.kontent.resolvePageUri
 import org.http4k.core.Uri
 import org.junit.jupiter.api.Test
 import java.io.File
