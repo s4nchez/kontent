@@ -53,6 +53,14 @@ class KontentTest {
     }
 
     @Test
+    fun `site can redefine a page URI` (){
+        val mappings = mapOf(Uri.of("/my-page") to Uri.of("/"))
+        val site = Kontent(configuration.copy(urlMappings = mappings)).build()
+
+        assertThat(site.pages.first(), matchesPageUri(Uri.of("/")))
+    }
+
+    @Test
     fun `site can be served`(approver: Approver) {
         val app = Kontent(configuration).build().asHttpHandler()
 

@@ -21,9 +21,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val template: Template = handlebars.compile("index")
 
         val pages = File(configuration.sourcePath.value).walkTopDown().filter { it.name.endsWith(".md") }
-            .map { generatePage(it, template, it.resolvePageUri(configuration)) }
+            .map { generatePage(it, template, it.resolvePageUri(configuration), configuration.urlMappings) }
 
-        val standalonePages = configuration.standalonePages.map { generatePage(File(it.sourcePath), template, it.uri) }
+        val standalonePages = configuration.standalonePages.map { generatePage(File(it.sourcePath), template, it.uri, configuration.urlMappings) }
 
         val assets = File(configuration.themePath.value).walkTopDown().filterNot { it.isDirectory || it.name.endsWith(".md") }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
@@ -33,11 +33,12 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         return Site(allPages, configuration.baseUri, assets.toSet()).also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
-    private fun generatePage(it: File, template: Template, targetUri: Uri): Page {
+    private fun generatePage(it: File, template: Template, targetUri: Uri, urlMappings: Map<Uri, Uri>): Page {
         val markdown = Markdown(it.readText())
         val contentHtml = markdownConversion.convert(markdown)
         val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-        return Page(targetUri, Html(compiledPage))
+        val finalUrl = urlMappings[targetUri] ?: targetUri
+        return Page(finalUrl, Html(compiledPage))
     }
 }
 
@@ -54,7 +55,8 @@ data class SiteConfiguration(
     val sourcePath: ContentSourcePath,
     val themePath: ThemePath,
     val baseUri: Uri = Uri.of(""),
-    val standalonePages: Set<PageSource> = setOf()
+    val standalonePages: Set<PageSource> = setOf(),
+    val urlMappings: Map<Uri, Uri> = mapOf()
 )
 
 data class ContentSourcePath(val value: String) : ValidatedPath(value)
