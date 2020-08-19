@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
+import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.models.Sitemap
 import io.github.kontent.models.Url
 import org.http4k.client.JavaHttpClient
