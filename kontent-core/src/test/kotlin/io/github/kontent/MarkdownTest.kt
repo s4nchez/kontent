@@ -36,7 +36,6 @@ class MarkdownTest {
     @Test
     fun `can render code from another source`(approver: Approver) {
         val github = { request: Request ->
-            println(request.uri)
             if (request.uri == Uri.of("https://raw.githubusercontent.com/http4k/http4k/master/src/docs/quickstart/example.kt"))
                 Response(Status.OK).body("val a = \"bob\"") else error("fail")
         }
