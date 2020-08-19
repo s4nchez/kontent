@@ -56,23 +56,6 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class SiteConfiguration(
-    val sourcePath: ContentSourcePath,
-    val themePath: ThemePath,
-    val assertSourcePath: AssetSourcePath,
-    val baseUri: Uri = Uri.of(""),
-    val standalonePages: Set<PageSource> = setOf(),
-    val urlMappings: Map<Uri, Uri> = mapOf()
-)
-
-data class ContentSourcePath(val value: String) : ValidatedPath(value)
-
-data class PageSource(val uri: Uri, val sourcePath: String) : ValidatedPath(sourcePath)
-
-data class AssetSourcePath(val value: String):ValidatedPath(value)
-
-data class ThemePath(val value: String) : ValidatedPath(value)
-
 data class Site(val pages: List<Page>, val baseUri: Uri, val assets: List<Asset> = listOf())
 
 data class XmlDocument(val raw: String)
@@ -84,12 +67,6 @@ data class Html(val raw: String)
 data class Asset(val uri: Uri, val mapsTo: AssetPath)
 
 data class AssetPath(val value: String) : ValidatedPath(value)
-
-open class ValidatedPath(val path: String) {
-    init {
-        if (!File(path).exists()) throw IllegalArgumentException("path ${File(path).absolutePath} does not exist")
-    }
-}
 
 fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assertSourcePath))
 
