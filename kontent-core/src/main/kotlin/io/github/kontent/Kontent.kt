@@ -32,9 +32,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .filterNot { it.isDirectory || it.name.endsWith(".md") }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
 
-        val allPages = (pages + standalonePages).toSet()
+        val allPages = (pages + standalonePages).toList()
 
-        return Site(allPages, configuration.baseUri, assets.toSet())
+        return Site(allPages, configuration.baseUri, assets.toList())
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
@@ -73,7 +73,7 @@ data class AssetSourcePath(val value: String):ValidatedPath(value)
 
 data class ThemePath(val value: String) : ValidatedPath(value)
 
-data class Site(val pages: Set<Page>, val baseUri: Uri, val assets: Set<Asset> = setOf())
+data class Site(val pages: List<Page>, val baseUri: Uri, val assets: List<Asset> = listOf())
 
 data class XmlDocument(val raw: String)
 
