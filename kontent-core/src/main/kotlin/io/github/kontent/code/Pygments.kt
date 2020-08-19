@@ -1,4 +1,4 @@
-package io.github.kontent
+package io.github.kontent.code
 
 import org.python.util.PythonInterpreter
 

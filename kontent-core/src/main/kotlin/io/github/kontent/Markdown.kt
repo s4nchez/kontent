@@ -1,6 +1,7 @@
 package io.github.kontent
 
 import io.github.kontent.CodeFetcher.Companion.NoOp
+import io.github.kontent.code.Pygments
 import org.commonmark.node.AbstractVisitor
 import org.commonmark.node.HtmlInline
 import org.commonmark.node.Node
