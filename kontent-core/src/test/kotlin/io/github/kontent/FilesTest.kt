@@ -7,6 +7,7 @@ import org.http4k.testing.ApprovalTest
 import org.http4k.testing.Approver
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.io.File
 
 @ExtendWith(ApprovalTest::class)
 class FilesTest {
@@ -22,7 +23,7 @@ class FilesTest {
     fun `exports files correctly`(approver: Approver) {
         val site = Kontent(configuration).build()
 
-        val target = createTempDir("kontent-export")
+        val target = createTempDir("kontent-export", directory = File("build"))
 
         site.exportFiles(TargetDirectory(target.path))
 
