@@ -4,3 +4,10 @@ include 'kontent-core'
 include 'kontent-theme-default'
 include 'kontent-example'
 include 'kontent-website'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
