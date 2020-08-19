@@ -1,5 +1,7 @@
 # Kontent
 
+[![Build Status](https://travis-ci.org/s4nchez/kontent.svg?branch=master)](https://travis-ci.org/s4nchez/kontent)
+
 Kontent is an opinionated website generator written in Kotlin.
 
 Some principles are:
