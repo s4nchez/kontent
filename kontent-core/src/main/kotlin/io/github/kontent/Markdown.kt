@@ -49,13 +49,12 @@ class CodeFetchingPostProcessor(private val fetcher: CodeFetcher) : PostProcesso
                 if (firstChild != null && firstChild is HtmlInline) {
                     firstChild.fetchParameters()?.apply {
                         val newNode = HtmlInline().apply {
-                            literal = fetcher.fetch(uri)?.let { Pygments().highlight(it) }
+                            literal = fetcher.fetch(uri)?.let { Pygments().highlight(it, language) }
                         }
                         node.appendChild(firstChild)
                         node.insertAfter(newNode)
                         node.unlink()
                     }
-
                 }
             }
         })
