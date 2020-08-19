@@ -29,6 +29,7 @@ class FilesTest {
 
         val files = target.walkTopDown()
             .filterNot { it.isDirectory }
+            .sorted()
             .map { it.path.replace(target.path, "") to it.readText() }
 
         val summary = files.map(Pair<String, String>::first).joinToString("\n")
