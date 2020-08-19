@@ -14,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 
 @ExtendWith(ApprovalTest::class)
-class MarkdownConversionTest {
+class MarkdownTest {
     @Test
     fun `can convert file`() {
         val document: Html = MarkdownConversion().convert(Markdown("This is *Sparta*"))
