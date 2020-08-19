@@ -11,21 +11,21 @@ import org.junit.jupiter.api.extension.ExtendWith
 class KontentTest {
 
     @Test
-    fun `minimal site is a single page`() {
+    fun `minimal site with single page`() {
         val site = Kontent(configuration).build()
 
         assertThat(site.pages.first(), matchesPageUri(Uri.of("/my-page")))
     }
 
     @Test
-    fun `site can include static content`() {
+    fun `include static content`() {
         val site = Kontent(configuration).build()
 
         assertThat(site.assets.first(), matchesAssetUri(Uri.of("/css/main.css")))
     }
 
     @Test
-    fun `site can include reference to standalone pages outside content directory`() {
+    fun `include reference to standalone pages outside content directory`() {
         val source = PageSource(Uri.of("/random"), "src/test/resources/mvp/standalone-page/standalone.md")
 
         val site = Kontent(configuration.copy(standalonePages = setOf(source))).build()
@@ -34,7 +34,7 @@ class KontentTest {
     }
 
     @Test
-    fun `site can redefine a page URI`() {
+    fun `redefine a page URI`() {
         val mappings = mapOf(Uri.of("/my-page") to Uri.of("/"))
         val site = Kontent(configuration.copy(urlMappings = mappings)).build()
 
