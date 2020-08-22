@@ -9,28 +9,26 @@ data class NavigationItem(
     val uri: Uri,
     val page: Page? = null,
     val children: List<NavigationItem> = listOf()
-) : Comparable<NavigationItem> {
-    override fun compareTo(other: NavigationItem): Int = uri.path.compareTo(other.uri.path)
-}
+)
 
 object NavigationResolving {
     fun Site.generateNavigation(): Navigation = Navigation(
         pages.exceptRoot()
             .map { it.toNavigationItem() }
             .addIntermediateNavigationItems()
-            .sorted()
+            .sortedBy { it.uri.path }
             .aggregateChildren()
             .toList()
     )
 
-    private fun List<Page>.exceptRoot() = filterNot { it.uri.path.replace("/", "").isBlank() }
+    private fun List<Page>.exceptRoot() = filterNot { it.uri.isRoot() }
 
     private fun Page.toNavigationItem() = NavigationItem(uri.name(), uri, this)
 
     private fun List<NavigationItem>.addIntermediateNavigationItems() =
         fold(this) { acc, next -> acc + acc.createMissingNavFor(next.parents()) }
 
-    private fun NavigationItem.parents() = uri.parents().filterNot { it == Uri.of("/") }
+    private fun NavigationItem.parents() = uri.parents().filterNot { it.isRoot() }
 
     private fun List<NavigationItem>.createMissingNavFor(parents: List<Uri>): List<NavigationItem> =
         parents.map { NavigationItem(it.name(), it, null) }
@@ -41,9 +39,9 @@ object NavigationResolving {
     private fun Uri.name() = path.split("/").filterNot(String::isBlank).last().capitalize().replace("-", " ")
 
     private fun Uri.parent(): Uri? =
-        if (path == "/") null
+        if (isRoot()) null
         else
-            Uri.of("/" + path.split("/").filterNot(String::isBlank).dropLast(1).joinToString("/"))
+            Uri.of("/${path.split("/").filterNot(String::isBlank).dropLast(1).joinToString("/")}")
 
     private fun Uri.parents(): List<Uri> = parent()?.let { listOf(it) + it.parents() } ?: listOf()
 
@@ -58,4 +56,6 @@ object NavigationResolving {
 
     private fun Uri.isParentOf(candidate: Uri) = candidate != this && candidate.path.startsWith(path) &&
         !candidate.path.replace(path, "").removePrefix("/").contains("/")
+
+    private fun Uri.isRoot() = this == Uri.of("/")
 }
