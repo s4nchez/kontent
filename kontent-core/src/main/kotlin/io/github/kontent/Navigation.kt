@@ -9,24 +9,28 @@ data class NavigationItem(
     val uri: Uri,
     val page: Page? = null,
     val children: List<NavigationItem> = listOf()
-)
+) : Comparable<NavigationItem> {
+    override fun compareTo(other: NavigationItem): Int = uri.path.compareTo(other.uri.path)
+}
 
 object NavigationResolving {
-    fun Site.generateNavigation(): Navigation = pages.toNavigation()
-
-    private fun List<Page>.toNavigation() =
-        Navigation(filterNot { it.uri.path.replace("/", "").isBlank() }
-            .sortedBy { it.uri.path }
-            .map { NavigationItem(it.uri.name(), it.uri, it) }
+    fun Site.generateNavigation(): Navigation = Navigation(
+        pages.exceptRoot()
+            .map { it.toNavigationItem() }
             .addIntermediateNavigationItems()
+            .sorted()
             .aggregateChildren()
             .toList()
-        )
+    )
 
-    private fun List<NavigationItem>.addIntermediateNavigationItems(): List<NavigationItem> =
+    private fun List<Page>.exceptRoot() = filterNot { it.uri.path.replace("/", "").isBlank() }
+
+    private fun Page.toNavigationItem() = NavigationItem(uri.name(), uri, this)
+
+    private fun List<NavigationItem>.addIntermediateNavigationItems() =
         fold(this) { acc, next -> acc + acc.createMissingNavFor(next.parents()) }
 
-    private fun NavigationItem.parents(): List<Uri> = uri.parents().filterNot { it == Uri.of("/") }
+    private fun NavigationItem.parents() = uri.parents().filterNot { it == Uri.of("/") }
 
     private fun List<NavigationItem>.createMissingNavFor(parents: List<Uri>): List<NavigationItem> =
         parents.fold(emptyList()) { acc, next ->
@@ -45,8 +49,7 @@ object NavigationResolving {
 
     private fun Uri.parents(): List<Uri> = parent()?.let { listOf(it) + it.parents() } ?: listOf()
 
-    private fun Uri.isParentOf(candidate: Uri): Boolean = candidate != this &&
-        candidate.path.startsWith(path) &&
+    private fun Uri.isParentOf(candidate: Uri) = candidate != this && candidate.path.startsWith(path) &&
         !candidate.path.replace(path, "").removePrefix("/").contains("/")
 
     private fun NavigationItem.findChildren(candidates: List<NavigationItem>): List<NavigationItem> =
@@ -54,12 +57,18 @@ object NavigationResolving {
             .map { it.copy(children = it.findChildren(candidates)) }
 
     private fun List<NavigationItem>.aggregateChildren(): List<NavigationItem> =
-        if (map { it.segments().size }.max() == 1)
+        if (containsOnlyTopLevel())
             this
         else
-            fold(listOf()) { acc, d: NavigationItem ->
-                if (d.segments().size == 1) {
-                    acc + d.copy(children = d.findChildren(this))
+            fold(listOf()) { acc, next ->
+                if (next.isTopLevel()) {
+                    acc + next.copy(children = next.findChildren(this))
                 } else acc
             }
+
+    private fun NavigationItem.isTopLevel(): Boolean = segments().size == 1
+
+    private fun List<NavigationItem>.containsOnlyTopLevel(): Boolean = map { it.isTopLevel() }.reduce { acc, next ->
+        acc && next
+    }
 }
