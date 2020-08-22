@@ -33,10 +33,8 @@ object NavigationResolving {
     private fun NavigationItem.parents() = uri.parents().filterNot { it == Uri.of("/") }
 
     private fun List<NavigationItem>.createMissingNavFor(parents: List<Uri>): List<NavigationItem> =
-        parents.fold(emptyList()) { acc, next ->
-            find { it.uri.path == next.path }?.let { acc }
-                ?: acc + NavigationItem(next.name(), next, null)
-        }
+        parents.map { NavigationItem(it.name(), it, null) }
+            .filterNot { candidate -> candidate.uri in map { it.uri } }
 
     private fun NavigationItem.segments() = uri.path.split("/").filterNot(String::isBlank)
 
