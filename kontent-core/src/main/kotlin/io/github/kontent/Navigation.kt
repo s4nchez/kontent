@@ -57,18 +57,7 @@ object NavigationResolving {
             .map { it.copy(children = it.findChildren(candidates)) }
 
     private fun List<NavigationItem>.aggregateChildren(): List<NavigationItem> =
-        if (containsOnlyTopLevel())
-            this
-        else
-            fold(listOf()) { acc, next ->
-                if (next.isTopLevel()) {
-                    acc + next.copy(children = next.findChildren(this))
-                } else acc
-            }
+        filter { it.isTopLevel() }.map { it.copy(children = it.findChildren(this)) }
 
     private fun NavigationItem.isTopLevel(): Boolean = segments().size == 1
-
-    private fun List<NavigationItem>.containsOnlyTopLevel(): Boolean = map { it.isTopLevel() }.reduce { acc, next ->
-        acc && next
-    }
 }
