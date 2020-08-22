@@ -97,7 +97,7 @@ data class NavigationItem(val name: String, val uri: Uri, val page: Page? = null
 private fun List<Page>.toNavigation() =
     Navigation(filterNot { it.uri.path.replace("/", "").isBlank() }
         .sortedBy { it.uri.path }
-        .map { NavigationItem(it.uri.path.name(), it.uri, it) }
+        .map { NavigationItem(it.uri.name(), it.uri, it) }
         .addIntermediateNavigationItems()
         .aggregateChildren()
         .toList()
@@ -106,17 +106,17 @@ private fun List<Page>.toNavigation() =
 private fun List<NavigationItem>.addIntermediateNavigationItems(): List<NavigationItem> =
     fold(this) { acc, next -> acc + acc.createMissingNavFor(next.parents()) }
 
-private fun NavigationItem.parents(): List<String> = uri.parents().filterNot { it == Uri.of("/") }.map { it.path }
+private fun NavigationItem.parents(): List<Uri> = uri.parents().filterNot { it == Uri.of("/") }
 
-fun List<NavigationItem>.createMissingNavFor(parents: List<String>): List<NavigationItem> =
+fun List<NavigationItem>.createMissingNavFor(parents: List<Uri>): List<NavigationItem> =
     parents.fold(emptyList()) { acc, next ->
-        find { it.uri.path == next }?.let { acc }
-            ?: acc + NavigationItem(next.name(), Uri.of(next), null)
+        find { it.uri.path == next.path }?.let { acc }
+            ?: acc + NavigationItem(next.name(), next, null)
     }
 
 private fun Site.generateNavigation(): Navigation = pages.toNavigation()
 private fun NavigationItem.segments() = uri.path.split("/").filterNot(String::isBlank)
-private fun String.name() = split("/").filterNot(String::isBlank).last().capitalize().replace("-", " ")
+private fun Uri.name() = path.split("/").filterNot(String::isBlank).last().capitalize().replace("-", " ")
 
 private fun Uri.parent(): Uri? =
     if (path == "/") null else Uri.of("/" + path.split("/").filterNot(String::isBlank).dropLast(1).joinToString("/"))
