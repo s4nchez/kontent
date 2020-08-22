@@ -49,15 +49,15 @@ object NavigationResolving {
 
     private fun Uri.parents(): List<Uri> = parent()?.let { listOf(it) + it.parents() } ?: listOf()
 
-    private fun Uri.isParentOf(candidate: Uri) = candidate != this && candidate.path.startsWith(path) &&
-        !candidate.path.replace(path, "").removePrefix("/").contains("/")
+    private fun List<NavigationItem>.aggregateChildren(): List<NavigationItem> =
+        filter { it.isTopLevel() }.map { it.copy(children = it.findChildren(this)) }
+
+    private fun NavigationItem.isTopLevel(): Boolean = segments().size == 1
 
     private fun NavigationItem.findChildren(candidates: List<NavigationItem>): List<NavigationItem> =
         candidates.filter { uri.isParentOf(it.uri) }
             .map { it.copy(children = it.findChildren(candidates)) }
 
-    private fun List<NavigationItem>.aggregateChildren(): List<NavigationItem> =
-        filter { it.isTopLevel() }.map { it.copy(children = it.findChildren(this)) }
-
-    private fun NavigationItem.isTopLevel(): Boolean = segments().size == 1
+    private fun Uri.isParentOf(candidate: Uri) = candidate != this && candidate.path.startsWith(path) &&
+        !candidate.path.replace(path, "").removePrefix("/").contains("/")
 }
