@@ -11,7 +11,7 @@ data class NavigationItem(
     val children: List<NavigationItem> = listOf()
 )
 
-object NavigationResolving {
+object NavigationGenerator {
     fun Site.generateNavigation(): Navigation = Navigation(
         pages.exceptRoot()
             .map { it.toNavigationItem() }

@@ -2,7 +2,7 @@ package io.github.kontent
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import io.github.kontent.NavigationResolving.generateNavigation
+import io.github.kontent.NavigationGenerator.generateNavigation
 import org.http4k.core.Uri
 import org.junit.jupiter.api.Test
 
