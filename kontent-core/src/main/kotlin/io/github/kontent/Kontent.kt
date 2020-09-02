@@ -30,7 +30,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .map { generatePage(File(it.sourcePath), template, it.uri, configuration.urlMappings) }
 
         val assets = File(configuration.assertSourcePath.value).walkTopDown()
-            .filterNot { it.isDirectory || it.name.endsWith(".md") }
+            .filterNot { it.isDirectory }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
 
         val allPages = (pages + standalonePages).toList()
