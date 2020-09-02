@@ -6,7 +6,6 @@ import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.markdown.FileSystemMarkdownSource
-import io.github.kontent.markdown.Markdown
 import io.github.kontent.markdown.MarkdownConversion
 import io.github.kontent.markdown.MarkdownSourceFile
 import io.github.kontent.models.Sitemap
@@ -26,8 +25,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val pages = FileSystemMarkdownSource(configuration).listAllSources()
-            .map { generatePage(it, template, configuration.urlMappings) }
+        val markdownSource = FileSystemMarkdownSource(configuration)
+        val pages = markdownSource.listAllSources()
+            .map { generatePage(markdownSource, it, template, configuration.urlMappings) }
 
         val assets = File(configuration.assertSourcePath.value).walkTopDown()
             .filterNot { it.isDirectory }
@@ -39,11 +39,11 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
-    private fun generatePage(source: MarkdownSourceFile, template: Template, urlMappings: Map<Uri, Uri>): Page {
-        val markdown = Markdown(File(source.location.path).readText())
+    private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template, urlMappings: Map<Uri, Uri>): Page {
+        val markdown = source.read(sourceFile)
         val contentHtml = markdownConversion.convert(markdown)
         val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-        val finalUrl = urlMappings[source.targetUri] ?: source.targetUri
+        val finalUrl = urlMappings[sourceFile.targetUri] ?: sourceFile.targetUri
         return Page(finalUrl, Html(compiledPage))
     }
 }

@@ -11,4 +11,6 @@ class FileSystemMarkdownSource(private val config: SiteConfiguration) {
         .filter { it.name.endsWith(".md") }
         .map { MarkdownSourceFile(Uri.of(it.path), it.resolvePageUri(config)) }
         .plus(config.standalonePages.map { MarkdownSourceFile(Uri.of(it.sourcePath), it.uri) })
+
+    fun read(sourceFile: MarkdownSourceFile): Markdown = Markdown(File(sourceFile.location.path).readText())
 }
