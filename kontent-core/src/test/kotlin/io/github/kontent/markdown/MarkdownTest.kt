@@ -1,7 +1,8 @@
-package io.github.kontent
+package io.github.kontent.markdown
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import io.github.kontent.Html
 import io.github.kontent.code.HttpCodeFetcher
 import org.http4k.core.Request
 import org.http4k.core.Response

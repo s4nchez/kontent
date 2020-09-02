@@ -1,5 +1,6 @@
-package io.github.kontent
+package io.github.kontent.markdown
 
+import io.github.kontent.Html
 import io.github.kontent.code.CodeFetcher
 import io.github.kontent.code.CodeFetcher.Companion.NoOp
 import io.github.kontent.code.CodeLink
