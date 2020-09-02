@@ -24,17 +24,15 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
         val pages = File(configuration.sourcePath.value).walkTopDown()
             .filter { it.name.endsWith(".md") }
-            .map { generatePage(MarkdownSourceFile(it, it.resolvePageUri(configuration)), template, configuration.urlMappings) }
-
-        val standalonePages = configuration.standalonePages
-            .map {
-                generatePage(MarkdownSourceFile(File(it.sourcePath), it.uri), template, configuration.urlMappings) }
+            .map { MarkdownSourceFile(it, it.resolvePageUri(configuration)) }
+            .plus(configuration.standalonePages.map { MarkdownSourceFile(File(it.sourcePath), it.uri) })
+            .map { generatePage(it, template, configuration.urlMappings) }
 
         val assets = File(configuration.assertSourcePath.value).walkTopDown()
             .filterNot { it.isDirectory }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
 
-        val allPages = (pages + standalonePages).toList()
+        val allPages = pages.toList()
 
         return Site(allPages, configuration.baseUri, assets.toList())
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
