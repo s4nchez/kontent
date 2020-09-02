@@ -40,7 +40,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     }
 
     private fun generatePage(source: MarkdownSourceFile, template: Template, urlMappings: Map<Uri, Uri>): Page {
-        val markdown = Markdown(source.location.readText())
+        val markdown = Markdown(File(source.location.path).readText())
         val contentHtml = markdownConversion.convert(markdown)
         val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
         val finalUrl = urlMappings[source.targetUri] ?: source.targetUri
