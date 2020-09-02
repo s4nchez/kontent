@@ -1,6 +1,5 @@
 package io.github.kontent.markdown
 
-import io.github.kontent.MarkdownSourceFile
 import io.github.kontent.SiteConfiguration
 import io.github.kontent.resolvePageUri
 import java.io.File

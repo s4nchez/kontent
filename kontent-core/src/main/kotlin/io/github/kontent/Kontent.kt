@@ -8,6 +8,7 @@ import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.markdown.FileSystemMarkdownSource
 import io.github.kontent.markdown.Markdown
 import io.github.kontent.markdown.MarkdownConversion
+import io.github.kontent.markdown.MarkdownSourceFile
 import io.github.kontent.models.Sitemap
 import io.github.kontent.models.Url
 import org.http4k.client.JavaHttpClient
@@ -39,7 +40,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     }
 
     private fun generatePage(source: MarkdownSourceFile, template: Template, urlMappings: Map<Uri, Uri>): Page {
-        val markdown = Markdown(source.file.readText())
+        val markdown = Markdown(source.location.readText())
         val contentHtml = markdownConversion.convert(markdown)
         val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
         val finalUrl = urlMappings[source.targetUri] ?: source.targetUri
@@ -75,4 +76,3 @@ fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.
 private fun File.relativePath(basePath: ValidatedPath) =
     "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
 
-data class MarkdownSourceFile(val file: File, val targetUri: Uri)
