@@ -24,10 +24,11 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
         val pages = File(configuration.sourcePath.value).walkTopDown()
             .filter { it.name.endsWith(".md") }
-            .map { generatePage(it, template, it.resolvePageUri(configuration), configuration.urlMappings) }
+            .map { generatePage(MarkdownSourceFile(it, it.resolvePageUri(configuration)), template, configuration.urlMappings) }
 
         val standalonePages = configuration.standalonePages
-            .map { generatePage(File(it.sourcePath), template, it.uri, configuration.urlMappings) }
+            .map {
+                generatePage(MarkdownSourceFile(File(it.sourcePath), it.uri), template, configuration.urlMappings) }
 
         val assets = File(configuration.assertSourcePath.value).walkTopDown()
             .filterNot { it.isDirectory }
@@ -39,11 +40,11 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
-    private fun generatePage(it: File, template: Template, targetUri: Uri, urlMappings: Map<Uri, Uri>): Page {
-        val markdown = Markdown(it.readText())
+    private fun generatePage(source: MarkdownSourceFile, template: Template, urlMappings: Map<Uri, Uri>): Page {
+        val markdown = Markdown(source.file.readText())
         val contentHtml = markdownConversion.convert(markdown)
         val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-        val finalUrl = urlMappings[targetUri] ?: targetUri
+        val finalUrl = urlMappings[source.targetUri] ?: source.targetUri
         return Page(finalUrl, Html(compiledPage))
     }
 }
@@ -75,3 +76,5 @@ fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.
 
 private fun File.relativePath(basePath: ValidatedPath) =
     "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
+
+data class MarkdownSourceFile(val file: File, val targetUri: Uri)
