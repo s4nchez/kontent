@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.code.HttpCodeFetcher
+import io.github.kontent.markdown.FileSystemMarkdownSource
 import io.github.kontent.markdown.Markdown
 import io.github.kontent.markdown.MarkdownConversion
 import io.github.kontent.models.Sitemap
@@ -24,10 +25,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
         val template: Template = handlebars.compile("index")
 
-        val pages = File(configuration.sourcePath.value).walkTopDown()
-            .filter { it.name.endsWith(".md") }
-            .map { MarkdownSourceFile(it, it.resolvePageUri(configuration)) }
-            .plus(configuration.standalonePages.map { MarkdownSourceFile(File(it.sourcePath), it.uri) })
+        val pages = FileSystemMarkdownSource(configuration).listAllSources()
             .map { generatePage(it, template, configuration.urlMappings) }
 
         val assets = File(configuration.assertSourcePath.value).walkTopDown()
