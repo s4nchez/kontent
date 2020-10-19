@@ -3,6 +3,7 @@ package io.github.kontent
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import io.github.kontent.NavigationGenerator.generateNavigation
+import io.github.kontent.asset.Assets
 import org.http4k.core.Uri
 import org.junit.jupiter.api.Test
 
@@ -14,7 +15,7 @@ internal class NavigationTest {
             page("/"),
             page("/about"),
             page("/code-of-conduct")
-        ), baseUri = Uri.of(""), assets = listOf())
+        ), baseUri = Uri.of(""), assets = Assets(listOf()))
 
         assertThat(site.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -32,7 +33,7 @@ internal class NavigationTest {
             page("/docs/bar"),
             page("/about/contact"),
             page("/about/code-of-conduct")
-        ), baseUri = Uri.of(""), assets = listOf())
+        ), baseUri = Uri.of(""), assets = Assets(listOf()))
 
         assertThat(site.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -57,7 +58,7 @@ internal class NavigationTest {
             page("/stay/foo/d"),
             page("/stay/bar/e"),
             page("/stay/bar/f")
-        ), baseUri = Uri.of(""), assets = listOf()).generateNavigation(),
+        ), baseUri = Uri.of(""), assets = Assets(listOf())).generateNavigation(),
             equalTo(
                 Navigation(listOf(
                     NavigationItem("Go", Uri.of("/go"), null,

@@ -32,11 +32,14 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
         val assets = Assets(File(configuration.assertSourcePath.value).walkTopDown()
             .filterNot { it.isDirectory }
-            .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) })
+            .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
+            .toList()
+        )
+
 
         val allPages = pages.toList()
 
-        return Site(allPages, configuration.baseUri, assets.assets.toList())
+        return Site(allPages, configuration.baseUri, assets)
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
@@ -58,7 +61,7 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class Site(val pages: List<Page>, val baseUri: Uri, val assets: List<Asset>)
+data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
 
 data class XmlDocument(val raw: String)
 
