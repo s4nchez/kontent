@@ -1,6 +1,7 @@
 package io.github.kontent
 
 import com.github.jknack.handlebars.Handlebars
+import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
@@ -24,6 +25,8 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
     fun build(): Site {
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
+        handlebars.registerHelper("asset", Helper<String> { context, _ -> context })
+
         val template: Template = handlebars.compile("index")
 
         val markdownSource = FileSystemMarkdownSource(configuration)
