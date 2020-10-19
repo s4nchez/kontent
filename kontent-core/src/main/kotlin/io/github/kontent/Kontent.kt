@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
+import io.github.kontent.asset.Assets
 import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.markdown.FileSystemMarkdownSource
 import io.github.kontent.markdown.MarkdownConversion
@@ -29,13 +30,13 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val pages = markdownSource.listAllSources()
             .map { generatePage(markdownSource, it, template, configuration.urlMappings) }
 
-        val assets = File(configuration.assertSourcePath.value).walkTopDown()
+        val assets = Assets(File(configuration.assertSourcePath.value).walkTopDown()
             .filterNot { it.isDirectory }
-            .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
+            .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) })
 
         val allPages = pages.toList()
 
-        return Site(allPages, configuration.baseUri, assets.toList())
+        return Site(allPages, configuration.baseUri, assets.assets.toList())
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
