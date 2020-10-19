@@ -14,7 +14,7 @@ internal class NavigationTest {
             page("/"),
             page("/about"),
             page("/code-of-conduct")
-        ), baseUri = Uri.of(""))
+        ), baseUri = Uri.of(""), assets = listOf())
 
         assertThat(site.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -32,7 +32,7 @@ internal class NavigationTest {
             page("/docs/bar"),
             page("/about/contact"),
             page("/about/code-of-conduct")
-        ), baseUri = Uri.of(""))
+        ), baseUri = Uri.of(""), assets = listOf())
 
         assertThat(site.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -57,7 +57,7 @@ internal class NavigationTest {
             page("/stay/foo/d"),
             page("/stay/bar/e"),
             page("/stay/bar/f")
-        ), baseUri = Uri.of("")).generateNavigation(),
+        ), baseUri = Uri.of(""), assets = listOf()).generateNavigation(),
             equalTo(
                 Navigation(listOf(
                     NavigationItem("Go", Uri.of("/go"), null,

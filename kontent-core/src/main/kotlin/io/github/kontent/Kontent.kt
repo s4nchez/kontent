@@ -58,7 +58,7 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class Site(val pages: List<Page>, val baseUri: Uri, val assets: List<Asset> = listOf())
+data class Site(val pages: List<Page>, val baseUri: Uri, val assets: List<Asset>)
 
 data class XmlDocument(val raw: String)
 
