@@ -32,7 +32,7 @@ class HttpTest {
     fun `static content can be served`() {
         val app = Kontent(configuration).build().asHttpHandler()
 
-        val response = app(Request(GET, "/css/main.css"))
+        val response = app(Request(GET, "/css/main-1B2M2Y8AsgTpgAmY7PhCfg.css"))
 
         assertThat(response, hasStatus(OK) and hasContentType(ContentType("text/css")))
     }

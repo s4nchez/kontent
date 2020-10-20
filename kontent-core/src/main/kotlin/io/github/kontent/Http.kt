@@ -18,7 +18,7 @@ fun Kontent.asHttpHandler(): HttpHandler = ServerFilters.CatchAll().then { reque
 
 fun Site.asHttpHandler(): HttpHandler {
     val allPages = pages.map { it.uri.path to it }.toMap()
-    val staticContent = assets.map { it.uri.path to it }.toMap()
+    val staticContent = assets.assetsWithFingerprint()
 
     return { request ->
         when (request.uri.path) {

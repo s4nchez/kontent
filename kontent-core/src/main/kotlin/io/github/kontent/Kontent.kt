@@ -24,14 +24,6 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     private val markdownConversion = MarkdownConversion(HttpCodeFetcher(JavaHttpClient()))
 
     fun build(): Site {
-        val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
-        handlebars.registerHelper("asset", Helper<String> { context, _ -> context })
-
-        val template: Template = handlebars.compile("index")
-
-        val markdownSource = FileSystemMarkdownSource(configuration)
-        val pages = markdownSource.listAllSources()
-            .map { generatePage(markdownSource, it, template, configuration.urlMappings) }
 
         val assets = Assets(File(configuration.assetsPath.value).walkTopDown()
             .filterNot { it.isDirectory }
@@ -39,6 +31,15 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .toList()
         )
 
+        val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
+
+        handlebars.registerHelper("asset", Helper<String> { context, _ -> assets.withFingerprint(context) })
+
+        val template: Template = handlebars.compile("index")
+
+        val markdownSource = FileSystemMarkdownSource(configuration)
+        val pages = markdownSource.listAllSources()
+            .map { generatePage(markdownSource, it, template, configuration.urlMappings) }
 
         val allPages = pages.toList()
 
