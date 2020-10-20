@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
+import io.github.kontent.asset.Fingerprint
 import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.markdown.FileSystemMarkdownSource
 import io.github.kontent.markdown.MarkdownConversion
@@ -24,10 +25,14 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     private val markdownConversion = MarkdownConversion(HttpCodeFetcher(JavaHttpClient()))
 
     fun build(): Site {
+        val fingerprint = Fingerprint()
 
         val assets = Assets(File(configuration.assetsPath.value).walkTopDown()
             .filterNot { it.isDirectory }
-            .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
+            .map {
+                val assetUri = it.resolveAssetUri(configuration)
+                Asset(assetUri, AssetPath(it.absolutePath),
+                    fingerprint.generateFingerprintedUri(File(it.absolutePath).inputStream(), assetUri)) }
             .toList()
         )
 
@@ -73,7 +78,7 @@ data class Page(val uri: Uri, val content: Html)
 
 data class Html(val raw: String)
 
-data class Asset(val uri: Uri, val mapsTo: AssetPath)
+data class Asset(val uri: Uri, val mapsTo: AssetPath, val uriWithFingerprint: Uri)
 
 data class AssetPath(val value: String) : ValidatedPath(value)
 

@@ -4,7 +4,7 @@ import java.io.File
 
 fun Site.exportFiles(targetDirectory: TargetDirectory) {
     assets.forEach {
-        val destination = File(targetDirectory.value + "/" + it.uri.path)
+        val destination = File(targetDirectory.value + "/" + it.uriWithFingerprint.path)
         File(it.mapsTo.path).copyTo(destination)
     }
 
