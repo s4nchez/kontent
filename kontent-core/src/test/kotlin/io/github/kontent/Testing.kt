@@ -8,7 +8,7 @@ import org.http4k.core.Uri
 val configuration = SiteConfiguration(
     sourcePath = ContentSourcePath("src/test/resources/mvp/pages"),
     themePath = ThemePath("../kontent-theme-default/theme"),
-    assertSourcePath = AssetSourcePath("../kontent-theme-default/assets"),
+    assetsPath = AssetsPath("../kontent-theme-default/assets"),
     baseUri = Uri.of("https://example.org")
 )
 

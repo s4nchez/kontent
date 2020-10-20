@@ -33,7 +33,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val pages = markdownSource.listAllSources()
             .map { generatePage(markdownSource, it, template, configuration.urlMappings) }
 
-        val assets = Assets(File(configuration.assertSourcePath.value).walkTopDown()
+        val assets = Assets(File(configuration.assetsPath.value).walkTopDown()
             .filterNot { it.isDirectory }
             .map { Asset(it.resolveAssetUri(configuration), AssetPath(it.absolutePath)) }
             .toList()
@@ -76,7 +76,7 @@ data class Asset(val uri: Uri, val mapsTo: AssetPath)
 
 data class AssetPath(val value: String) : ValidatedPath(value)
 
-fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assertSourcePath))
+fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assetsPath))
 
 fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md"))
 

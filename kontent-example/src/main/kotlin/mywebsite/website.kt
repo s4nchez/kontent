@@ -1,6 +1,6 @@
 package mywebsite
 
-import io.github.kontent.AssetSourcePath
+import io.github.kontent.AssetsPath
 import io.github.kontent.ContentSourcePath
 import io.github.kontent.Kontent
 import io.github.kontent.SiteConfiguration
@@ -13,7 +13,7 @@ fun main() {
     Kontent(SiteConfiguration(
         sourcePath = ContentSourcePath("src/main/resources/mvp"),
         themePath = ThemePath("kontent-theme-default/theme"),
-        assertSourcePath = AssetSourcePath("../kontent-theme-default/assets")
+        assetsPath = AssetsPath("../kontent-theme-default/assets")
     )
     ).build().asHttpHandler().asServer(SunHttp(8000)).start()
 }
