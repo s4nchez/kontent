@@ -1,7 +1,6 @@
 # TODO
 
-* use index pages as /
-* support markdown frontmatter
+* expose frontmatter to template
 * split static content from theme
 * css generation
 * allow plain HTML pages
@@ -13,3 +12,5 @@
 # DONE
 * markdown extension to pull code from GitHub
 * hash-based cache busting
+* use index pages as /
+* support markdown frontmatter

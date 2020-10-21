@@ -84,7 +84,7 @@ data class AssetPath(val value: String) : ValidatedPath(value)
 
 fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assetsPath))
 
-fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md"))
+fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md").removeSuffix("/index"))
 
 private fun File.relativePath(basePath: ValidatedPath) =
     "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
