@@ -2,6 +2,7 @@ dependencies {
     implementation "org.http4k:http4k-core:${http4kVersion}"
     implementation "org.http4k:http4k-template-handlebars:${http4kVersion}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"
+    implementation 'com.atlassian.commonmark:commonmark-ext-yaml-front-matter:0.15.2'
     implementation 'com.atlassian.commonmark:commonmark:0.15.2'
     implementation 'org.simpleframework:simple-xml:2.7.1'
     implementation 'org.jsoup:jsoup:1.13.1'

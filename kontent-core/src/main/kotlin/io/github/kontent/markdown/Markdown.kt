@@ -5,6 +5,7 @@ import io.github.kontent.code.CodeFetcher
 import io.github.kontent.code.CodeFetcher.Companion.NoOp
 import io.github.kontent.code.CodeLink
 import io.github.kontent.code.Pygments
+import org.commonmark.ext.front.matter.YamlFrontMatterExtension
 import org.commonmark.node.AbstractVisitor
 import org.commonmark.node.HtmlInline
 import org.commonmark.node.Node
@@ -16,7 +17,10 @@ import org.commonmark.renderer.html.HtmlRenderer
 data class Markdown(val raw: String)
 
 class MarkdownConversion(fetcher: CodeFetcher = NoOp) {
-    private val parser: Parser = Parser.builder().postProcessor(CodeFetchingPostProcessor(fetcher)).build()
+    private val parser: Parser = Parser.builder()
+            .extensions(listOf(YamlFrontMatterExtension.create()))
+            .postProcessor(CodeFetchingPostProcessor(fetcher))
+            .build()
     fun convert(markdown: Markdown): Html {
         val document: Node = parser.parse(markdown.raw)
         val renderer = HtmlRenderer.builder().build()

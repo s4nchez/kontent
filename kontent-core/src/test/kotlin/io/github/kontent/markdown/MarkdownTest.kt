@@ -24,6 +24,17 @@ class MarkdownTest {
     }
 
     @Test
+    fun `can convert file with frontmatter`(){
+        val document: Html = MarkdownConversion().convert(Markdown("""
+---
+title: A page
+layout: new
+---
+This is *Sparta*""".trimIndent()))
+        assertThat(document, equalTo(Html("<p>This is <em>Sparta</em></p>\n")))
+    }
+
+    @Test
     fun `can render normal code`() {
         val document: Html = MarkdownConversion().convert(Markdown("""
         ```kotlin
