@@ -1,6 +1,7 @@
 # TODO
 
 * expose frontmatter to template
+* expose navigation to template
 * css generation
 * allow plain HTML pages
 * "hot reload" mode for regeneration on source changes
