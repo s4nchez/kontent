@@ -19,7 +19,6 @@ repositories {
 
 apply plugin: 'kotlin'
 apply plugin: 'application'
-apply plugin: 'maven'
 
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
@@ -40,7 +39,11 @@ allprojects {
         jcenter()
     }
 
+    group = "io.github.s4nchez"
+    version = "1.0"
+
     apply plugin: 'kotlin'
+    apply plugin: 'maven'
 
     test {
         useJUnitPlatform()
