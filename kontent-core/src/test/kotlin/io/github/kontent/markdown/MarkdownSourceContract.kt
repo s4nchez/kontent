@@ -22,7 +22,7 @@ abstract class MarkdownSourceContract {
         val files = source.listAllSources()
 
         assertThat(files.toSet(), equalTo(setOf(
-            MarkdownSourceFile(sourceUriFor("/www/index.md"), Uri.of("/index")),
+            MarkdownSourceFile(sourceUriFor("/www/index.md"), Uri.of("")),
             MarkdownSourceFile(sourceUriFor("/www/sub/page.md"), Uri.of("/sub/page"))
         )))
     }
