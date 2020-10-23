@@ -22,7 +22,7 @@ class NavigationDescription : ValueDescription {
     private fun Navigation.betterToString() = "\n" + items.joinToString("") { it.toString(0) }
 
     private fun NavigationItem.toString(level: Int): String {
-        return """${(0..level * 4).map { " " }.joinToString("")}- '$name': ${uri.path.let { "'$it'" }} (page=${page != null})
+        return """${(0..level * 4).map { " " }.joinToString("")}- '$name': ${uri.path.let { "'$it'" }} (page=${page})
             |${children.joinToString("") { it.toString(level + 1) }}
         """.trimMargin()
     }

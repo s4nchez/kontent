@@ -12,7 +12,8 @@ data class NavigationItem(
 )
 
 object NavigationGenerator {
-    fun List<Page>.generateNavigation(): Navigation = Navigation(
+
+    fun List<Uri>.generateNavigation(): Navigation = Navigation(
         exceptRoot()
             .map { it.toNavigationItem() }
             .addIntermediateNavigationItems()
@@ -21,9 +22,9 @@ object NavigationGenerator {
             .toList()
     )
 
-    private fun List<Page>.exceptRoot() = filterNot { it.uri.isRoot() }
+    private fun List<Uri>.exceptRoot() = filterNot { it.isRoot() }
 
-    private fun Page.toNavigationItem() = NavigationItem(uri.name(), uri, true)
+    private fun Uri.toNavigationItem() = NavigationItem(name(), this, true)
 
     private fun List<NavigationItem>.addIntermediateNavigationItems() =
         fold(this) { acc, next -> acc + acc.createMissingNavFor(next.parents()) }

@@ -85,9 +85,6 @@ internal class NavigationTest {
 
     }
 
-    private fun page(path: String) = Page(Uri.of(path), html)
+    private fun page(path: String) = Uri.of(path)
 
-    companion object {
-        val html = Html("<html></html>")
-    }
 }
