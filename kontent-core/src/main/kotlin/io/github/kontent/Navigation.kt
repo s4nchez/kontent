@@ -12,8 +12,8 @@ data class NavigationItem(
 )
 
 object NavigationGenerator {
-    fun Site.generateNavigation(): Navigation = Navigation(
-        pages.exceptRoot()
+    fun List<Page>.generateNavigation(): Navigation = Navigation(
+        exceptRoot()
             .map { it.toNavigationItem() }
             .addIntermediateNavigationItems()
             .sortedBy { it.uri.path }

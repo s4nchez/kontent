@@ -17,7 +17,7 @@ internal class NavigationTest {
             page("/code-of-conduct")
         ), baseUri = Uri.of(""), assets = Assets(listOf()))
 
-        assertThat(site.generateNavigation(),
+        assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
                 NavigationItem("About", Uri.of("/about"), page("/about")),
                 NavigationItem("Code of conduct", Uri.of("/code-of-conduct"), page("/code-of-conduct"))
@@ -35,7 +35,7 @@ internal class NavigationTest {
             page("/about/code-of-conduct")
         ), baseUri = Uri.of(""), assets = Assets(listOf()))
 
-        assertThat(site.generateNavigation(),
+        assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
                 NavigationItem("About", Uri.of("/about"), null, listOf(
                     NavigationItem("Code of conduct", Uri.of("/about/code-of-conduct"), page("/about/code-of-conduct")),
@@ -51,14 +51,15 @@ internal class NavigationTest {
 
     @Test
     fun `multi level with intermediate links`() {
-        assertThat(Site(listOf(
-            page("/go/foo"),
-            page("/go/foo/b"),
-            page("/go/foo/c"),
-            page("/stay/foo/d"),
-            page("/stay/bar/e"),
-            page("/stay/bar/f")
-        ), baseUri = Uri.of(""), assets = Assets(listOf())).generateNavigation(),
+        val site = Site(listOf(
+                page("/go/foo"),
+                page("/go/foo/b"),
+                page("/go/foo/c"),
+                page("/stay/foo/d"),
+                page("/stay/bar/e"),
+                page("/stay/bar/f")
+        ), baseUri = Uri.of(""), assets = Assets(listOf()))
+        assertThat(site.pages.generateNavigation(),
             equalTo(
                 Navigation(listOf(
                     NavigationItem("Go", Uri.of("/go"), null,
