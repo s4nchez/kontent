@@ -11,11 +11,12 @@ internal class NavigationTest {
 
     @Test
     fun `single level`() {
-        val site = Site(listOf(
-            page("/"),
-            page("/about"),
-            page("/code-of-conduct")
-        ), baseUri = Uri.of(""), assets = Assets(listOf()))
+        val pages = listOf(
+                page("/"),
+                page("/about"),
+                page("/code-of-conduct")
+        )
+        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()), navigation = pages.generateNavigation())
 
         assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -27,13 +28,14 @@ internal class NavigationTest {
 
     @Test
     fun `multi level`() {
-        val site = Site(listOf(
-            page("/"),
-            page("/docs/foo"),
-            page("/docs/bar"),
-            page("/about/contact"),
-            page("/about/code-of-conduct")
-        ), baseUri = Uri.of(""), assets = Assets(listOf()))
+        val pages = listOf(
+                page("/"),
+                page("/docs/foo"),
+                page("/docs/bar"),
+                page("/about/contact"),
+                page("/about/code-of-conduct")
+        )
+        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()), navigation = pages.generateNavigation())
 
         assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -51,14 +53,15 @@ internal class NavigationTest {
 
     @Test
     fun `multi level with intermediate links`() {
-        val site = Site(listOf(
+        val pages = listOf(
                 page("/go/foo"),
                 page("/go/foo/b"),
                 page("/go/foo/c"),
                 page("/stay/foo/d"),
                 page("/stay/bar/e"),
                 page("/stay/bar/f")
-        ), baseUri = Uri.of(""), assets = Assets(listOf()))
+        )
+        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()), navigation = pages.generateNavigation())
         assertThat(site.pages.generateNavigation(),
             equalTo(
                 Navigation(listOf(

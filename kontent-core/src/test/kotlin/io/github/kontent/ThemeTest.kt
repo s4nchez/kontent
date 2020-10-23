@@ -20,7 +20,7 @@ class ThemeTest {
 
     @Test
     fun `renders basic content`(approver: Approver) {
-        val homePage = site.build().pages.find { it.uri== Uri.of("")  } ?: fail("page not found")
+        val homePage = site.build().pages.find { it.uri== Uri.of("/")  } ?: fail("page not found")
         approver.assertApproved(homePage.content.raw)
     }
 }

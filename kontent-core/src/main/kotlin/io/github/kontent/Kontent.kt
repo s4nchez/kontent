@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
+import io.github.kontent.NavigationGenerator.generateNavigation
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
 import io.github.kontent.asset.Fingerprint
@@ -48,7 +49,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
         val allPages = pages.toList()
 
-        return Site(allPages, configuration.baseUri, assets)
+        return Site(allPages, configuration.baseUri, assets, allPages.generateNavigation())
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
@@ -70,7 +71,7 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
+data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets, val navigation: Navigation)
 
 data class XmlDocument(val raw: String)
 
@@ -84,7 +85,9 @@ data class AssetPath(val value: String) : ValidatedPath(value)
 
 fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assetsPath))
 
-fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md").removeSuffix("/index"))
+fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md").removeSuffix("/index").ensureFirstSlash())
+
+private fun String.ensureFirstSlash() = if(startsWith("/")) this else "/"+this
 
 private fun File.relativePath(basePath: ValidatedPath) =
     "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
