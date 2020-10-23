@@ -43,8 +43,8 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val template: Template = handlebars.compile("index")
 
         val markdownSource = FileSystemMarkdownSource(configuration)
-        val pages = markdownSource.listAllSources()
-            .map { generatePage(markdownSource, it, template, configuration.urlMappings) }
+        val pages = markdownSource.listAllSources(configuration.urlMappings)
+            .map { generatePage(markdownSource, it, template) }
 
         val allPages = pages.toList()
 
@@ -52,12 +52,11 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
-    private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template, urlMappings: Map<Uri, Uri>): Page {
+    private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template): Page {
         val markdown = source.read(sourceFile)
         val contentHtml = markdownConversion.convert(markdown)
         val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
-        val finalUrl = urlMappings[sourceFile.targetUri] ?: sourceFile.targetUri
-        return Page(finalUrl, Html(compiledPage))
+        return Page(sourceFile.targetUri, Html(compiledPage))
     }
 }
 

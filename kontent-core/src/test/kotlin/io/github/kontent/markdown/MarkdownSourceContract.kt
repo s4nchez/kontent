@@ -19,7 +19,7 @@ abstract class MarkdownSourceContract {
 
     @Test
     fun `list all markdown files`() {
-        val files = source.listAllSources()
+        val files = source.listAllSources(emptyMap<Uri,Uri>())
 
         assertThat(files.toSet(), equalTo(setOf(
             MarkdownSourceFile(sourceUriFor("/www/index.md"), Uri.of("/")),
