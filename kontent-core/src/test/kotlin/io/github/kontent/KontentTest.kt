@@ -3,11 +3,8 @@ package io.github.kontent
 import com.natpryce.hamkrest.anyElement
 import com.natpryce.hamkrest.assertion.assertThat
 import org.http4k.core.Uri
-import org.http4k.testing.ApprovalTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(ApprovalTest::class)
 class KontentTest {
 
     @Test
