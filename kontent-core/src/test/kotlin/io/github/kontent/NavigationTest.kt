@@ -3,7 +3,6 @@ package io.github.kontent
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import io.github.kontent.NavigationGenerator.generateNavigation
-import io.github.kontent.asset.Assets
 import org.http4k.core.Uri
 import org.junit.jupiter.api.Test
 
@@ -16,9 +15,8 @@ internal class NavigationTest {
                 page("/about"),
                 page("/code-of-conduct")
         )
-        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()))
 
-        assertThat(site.pages.generateNavigation(),
+        assertThat(pages.generateNavigation(),
             equalTo(Navigation(listOf(
                 NavigationItem("About", Uri.of("/about"), true),
                 NavigationItem("Code of conduct", Uri.of("/code-of-conduct"), true)
@@ -35,9 +33,8 @@ internal class NavigationTest {
                 page("/about/contact"),
                 page("/about/code-of-conduct")
         )
-        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()))
 
-        assertThat(site.pages.generateNavigation(),
+        assertThat(pages.generateNavigation(),
             equalTo(Navigation(listOf(
                 NavigationItem("About", Uri.of("/about"), false, listOf(
                     NavigationItem("Code of conduct", Uri.of("/about/code-of-conduct"), true),
@@ -61,8 +58,7 @@ internal class NavigationTest {
                 page("/stay/bar/e"),
                 page("/stay/bar/f")
         )
-        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()))
-        assertThat(site.pages.generateNavigation(),
+        assertThat(pages.generateNavigation(),
             equalTo(
                 Navigation(listOf(
                     NavigationItem("Go", Uri.of("/go"), false,
