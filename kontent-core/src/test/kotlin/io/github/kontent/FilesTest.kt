@@ -2,7 +2,6 @@ package io.github.kontent
 
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
-import org.http4k.core.Uri
 import org.http4k.testing.ApprovalTest
 import org.http4k.testing.Approver
 import org.junit.jupiter.api.Test
@@ -10,13 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(ApprovalTest::class)
 class FilesTest {
-
-    private val configuration = SiteConfiguration(
-        sourcePath = ContentSourcePath("src/test/resources/mvp/pages"),
-        themePath = ThemePath("../kontent-theme-default/theme"),
-        assetsPath = AssetsPath("../kontent-theme-default/assets"),
-        baseUri = Uri.of("https://example.org")
-    )
 
     @Test
     fun `exports files correctly`(approver: Approver) {

@@ -7,12 +7,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class UriTest {
-    private val configuration = SiteConfiguration(
-        sourcePath = ContentSourcePath("src/test/resources"),
-        themePath = ThemePath("../kontent-theme-default/theme"),
-        assetsPath = AssetsPath("../kontent-theme-default/assets")
-    )
-
     @Test
     fun `resolve basic page Uri`() {
         assertThat(source("/a-page.md").resolvePageUri(configuration),
