@@ -20,8 +20,8 @@ internal class NavigationTest {
 
         assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
-                NavigationItem("About", Uri.of("/about"), page("/about")),
-                NavigationItem("Code of conduct", Uri.of("/code-of-conduct"), page("/code-of-conduct"))
+                NavigationItem("About", Uri.of("/about"), true),
+                NavigationItem("Code of conduct", Uri.of("/code-of-conduct"), true)
             )))
         )
     }
@@ -39,13 +39,13 @@ internal class NavigationTest {
 
         assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
-                NavigationItem("About", Uri.of("/about"), null, listOf(
-                    NavigationItem("Code of conduct", Uri.of("/about/code-of-conduct"), page("/about/code-of-conduct")),
-                    NavigationItem("Contact", Uri.of("/about/contact"), page("/about/contact"))
+                NavigationItem("About", Uri.of("/about"), false, listOf(
+                    NavigationItem("Code of conduct", Uri.of("/about/code-of-conduct"), true),
+                    NavigationItem("Contact", Uri.of("/about/contact"), true)
                 )),
-                NavigationItem("Docs", Uri.of("/docs"), null, listOf(
-                    NavigationItem("Bar", Uri.of("/docs/bar"), page("/docs/bar")),
-                    NavigationItem("Foo", Uri.of("/docs/foo"), page("/docs/foo"))
+                NavigationItem("Docs", Uri.of("/docs"), false, listOf(
+                    NavigationItem("Bar", Uri.of("/docs/bar"), true),
+                    NavigationItem("Foo", Uri.of("/docs/foo"), true)
                 ))
             )))
         )
@@ -65,23 +65,23 @@ internal class NavigationTest {
         assertThat(site.pages.generateNavigation(),
             equalTo(
                 Navigation(listOf(
-                    NavigationItem("Go", Uri.of("/go"), null,
+                    NavigationItem("Go", Uri.of("/go"), false,
                         children = listOf(
-                            NavigationItem("Foo", Uri.of("/go/foo"), page("/go/foo"),
+                            NavigationItem("Foo", Uri.of("/go/foo"), true,
                                 children = listOf(
-                                    NavigationItem("B", Uri.of("/go/foo/b"), page("/go/foo/b")),
-                                    NavigationItem("C", Uri.of("/go/foo/c"), page("/go/foo/c"))
+                                    NavigationItem("B", Uri.of("/go/foo/b"), true),
+                                    NavigationItem("C", Uri.of("/go/foo/c"), true)
                                 )
                             ))),
-                    NavigationItem("Stay", Uri.of("/stay"), null,
+                    NavigationItem("Stay", Uri.of("/stay"), false,
                         children = listOf(
-                            NavigationItem("Bar", Uri.of("/stay/bar"), null,
+                            NavigationItem("Bar", Uri.of("/stay/bar"), false,
                                 children = listOf(
-                                    NavigationItem("E", Uri.of("/stay/bar/e"), page("/stay/bar/e")),
-                                    NavigationItem("F", Uri.of("/stay/bar/f"), page("/stay/bar/f")))
+                                    NavigationItem("E", Uri.of("/stay/bar/e"), true),
+                                    NavigationItem("F", Uri.of("/stay/bar/f"), true))
                             ),
-                            NavigationItem("Foo", Uri.of("/stay/foo"), null,
-                                children = listOf(NavigationItem("D", Uri.of("/stay/foo/d"), page("/stay/foo/d")))
+                            NavigationItem("Foo", Uri.of("/stay/foo"), false,
+                                children = listOf(NavigationItem("D", Uri.of("/stay/foo/d"), true))
                             )
                         )
                     ))))

@@ -7,7 +7,7 @@ data class Navigation(val items: List<NavigationItem>)
 data class NavigationItem(
     val name: String,
     val uri: Uri,
-    val page: Page? = null,
+    val page: Boolean = false,
     val children: List<NavigationItem> = listOf()
 )
 
@@ -23,7 +23,7 @@ object NavigationGenerator {
 
     private fun List<Page>.exceptRoot() = filterNot { it.uri.isRoot() }
 
-    private fun Page.toNavigationItem() = NavigationItem(uri.name(), uri, this)
+    private fun Page.toNavigationItem() = NavigationItem(uri.name(), uri, true)
 
     private fun List<NavigationItem>.addIntermediateNavigationItems() =
         fold(this) { acc, next -> acc + acc.createMissingNavFor(next.parents()) }
@@ -31,7 +31,7 @@ object NavigationGenerator {
     private fun NavigationItem.parents() = uri.parents().filterNot { it.isRoot() }
 
     private fun List<NavigationItem>.createMissingNavFor(parents: List<Uri>): List<NavigationItem> =
-        parents.map { NavigationItem(it.name(), it, null) }
+        parents.map { NavigationItem(it.name(), it, false) }
             .filterNot { candidate -> candidate.uri in map { it.uri } }
 
     private fun NavigationItem.segments() = uri.path.split("/").filterNot(String::isBlank)
