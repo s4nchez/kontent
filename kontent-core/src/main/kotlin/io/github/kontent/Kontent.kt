@@ -4,7 +4,6 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
-import io.github.kontent.NavigationGenerator.generateNavigation
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
 import io.github.kontent.asset.Fingerprint
@@ -49,7 +48,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
         val allPages = pages.toList()
 
-        return Site(allPages, configuration.baseUri, assets, allPages.generateNavigation())
+        return Site(allPages, configuration.baseUri, assets)
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
@@ -71,7 +70,7 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets, val navigation: Navigation)
+data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
 
 data class XmlDocument(val raw: String)
 

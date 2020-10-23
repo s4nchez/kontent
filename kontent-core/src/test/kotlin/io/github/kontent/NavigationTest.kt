@@ -16,7 +16,7 @@ internal class NavigationTest {
                 page("/about"),
                 page("/code-of-conduct")
         )
-        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()), navigation = pages.generateNavigation())
+        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()))
 
         assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -35,7 +35,7 @@ internal class NavigationTest {
                 page("/about/contact"),
                 page("/about/code-of-conduct")
         )
-        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()), navigation = pages.generateNavigation())
+        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()))
 
         assertThat(site.pages.generateNavigation(),
             equalTo(Navigation(listOf(
@@ -61,7 +61,7 @@ internal class NavigationTest {
                 page("/stay/bar/e"),
                 page("/stay/bar/f")
         )
-        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()), navigation = pages.generateNavigation())
+        val site = Site(pages, baseUri = Uri.of(""), assets = Assets(listOf()))
         assertThat(site.pages.generateNavigation(),
             equalTo(
                 Navigation(listOf(
