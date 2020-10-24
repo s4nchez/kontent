@@ -7,7 +7,7 @@ import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.NavigationGenerator.generateNavigation
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
-import io.github.kontent.asset.AssetsSource
+import io.github.kontent.asset.FileSystemAssetsSource
 import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.markdown.FileSystemMarkdownSource
 import io.github.kontent.markdown.MarkdownConversion
@@ -26,7 +26,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     private val markdownConversion = MarkdownConversion(HttpCodeFetcher(JavaHttpClient()))
 
     fun build(): Site {
-        val assets = AssetsSource(configuration.assetsPath).retrieve()
+        val assets = FileSystemAssetsSource(configuration.assetsPath).retrieve()
 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value)).apply {
             registerHelper("asset", Helper<String> { path, _ -> assets.findByPath(path)?.uriWithFingerprint })

@@ -6,10 +6,14 @@ import io.github.kontent.AssetsPath
 import io.github.kontent.resolveAssetUri
 import java.io.File
 
-class AssetsSource(private val assetsPath: AssetsPath) {
+interface SystemAssetsSource {
+    fun retrieve(): Assets
+}
+
+class FileSystemAssetsSource(private val assetsPath: AssetsPath) : SystemAssetsSource {
     private val fingerprint = Fingerprint()
 
-    fun retrieve() = Assets(File(assetsPath.value).walkTopDown()
+    override fun retrieve() = Assets(File(assetsPath.value).walkTopDown()
             .filterNot { it.isDirectory }
             .map {
                 val assetUri = it.resolveAssetUri(assetsPath)
