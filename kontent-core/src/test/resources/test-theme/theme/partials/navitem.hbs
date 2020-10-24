@@ -1,1 +1,9 @@
-<li>{{ name }}</li>
+<li>{{#if page}}<a href="{{ uri }}">{{name}}</a>{{else}}{{ name }}{{/if}}
+{{#if children ~}}
+<ul>
+{{#each children ~}}
+{{> partials/navitem }}
+{{/each ~}}
+</ul>
+{{/if ~}}
+</li>

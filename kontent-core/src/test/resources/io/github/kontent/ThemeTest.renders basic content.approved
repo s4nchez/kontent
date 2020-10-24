@@ -1,6 +1,14 @@
-Navigation(items&#x3D;[NavigationItem(name&#x3D;Foo, uri&#x3D;/foo, page&#x3D;true, children&#x3D;[NavigationItem(name&#x3D;Bar, uri&#x3D;/foo/bar, page&#x3D;true, children&#x3D;[])])])
-<nav><ul>
-<li>Foo</li>
+Navigation(items&#x3D;[NavigationItem(name&#x3D;Foo, uri&#x3D;/foo, page&#x3D;false, children&#x3D;[NavigationItem(name&#x3D;Bar, uri&#x3D;/foo/bar, page&#x3D;true, children&#x3D;[]), NavigationItem(name&#x3D;Xyz, uri&#x3D;/foo/xyz, page&#x3D;true, children&#x3D;[])])])
+<nav>
+<ul>
+<li>Foo
+<ul>
+<li><a href="/foo/bar">Bar</a>
+</li>
+<li><a href="/foo/xyz">Xyz</a>
+</li>
+</ul>
+</li>
 </ul>
 </nav>
 <p><em>my content</em></p>

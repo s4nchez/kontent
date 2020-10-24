@@ -37,9 +37,10 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .toList()
         )
 
-        val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value))
-
-        handlebars.registerHelper("asset", Helper<String> { context, _ -> assets.withFingerprint(context) })
+        val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value)).apply {
+            registerHelper("asset", Helper<String> { context, _ -> assets.withFingerprint(context) })
+            infiniteLoops(true)
+        }
 
         val template: Template = handlebars.compile("index")
 
