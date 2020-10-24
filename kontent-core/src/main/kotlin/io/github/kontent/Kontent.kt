@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Template
 import com.github.jknack.handlebars.io.FileTemplateLoader
+import io.github.kontent.NavigationGenerator.generateNavigation
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
 import io.github.kontent.asset.Fingerprint
@@ -43,8 +44,15 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val template: Template = handlebars.compile("index")
 
         val markdownSource = FileSystemMarkdownSource(configuration)
-        val pages = markdownSource.listAllSources(configuration.urlMappings)
-            .map { generatePage(markdownSource, it, template) }
+
+        val pageSources = markdownSource.listAllSources(configuration.urlMappings)
+
+        val navigation = pageSources.map { it.targetUri }.toList().generateNavigation()
+
+        val pages = pageSources
+            .map {
+                generatePage(markdownSource, it, template, navigation)
+            }
 
         val allPages = pages.toList()
 
@@ -52,10 +60,14 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 
-    private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template): Page {
+    private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template, navigation: Navigation): Page {
         val markdown = source.read(sourceFile)
         val contentHtml = markdownConversion.convert(markdown)
-        val compiledPage = template.apply(PageModel(contentHtml.raw))
+        val pageModel = PageModel(
+                content = contentHtml.raw,
+                nav = navigation
+        )
+        val compiledPage = template.apply(pageModel)
         return Page(sourceFile.targetUri, Html(compiledPage))
     }
 }
@@ -69,7 +81,7 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class PageModel(val content:String)
+data class PageModel(val content: String, val nav: Navigation)
 
 data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
 
