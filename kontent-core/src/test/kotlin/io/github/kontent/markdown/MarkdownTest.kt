@@ -3,6 +3,7 @@ package io.github.kontent.markdown
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import io.github.kontent.Html
+import io.github.kontent.PageMetadata
 import io.github.kontent.code.HttpCodeFetcher
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -24,7 +25,7 @@ class MarkdownTest {
     }
 
     @Test
-    fun `can convert file with frontmatter`(){
+    fun `can convert file with frontmatter`() {
         val document: Html = MarkdownConversion().convert(Markdown("""
 ---
 title: A page
@@ -43,7 +44,7 @@ This is *Sparta*""".trimIndent())).html
         """.trimIndent())).html
 
         assertThat(document, equalTo(Html("<pre><code class=\"language-kotlin\">val a = &quot;bob&quot;\n" +
-            "</code></pre>\n")))
+                "</code></pre>\n")))
     }
 
     @Test
@@ -62,6 +63,16 @@ This is *Sparta*""".trimIndent())).html
         """.trimIndent())).html
 
         approver.assertApproved(document.raw)
+    }
+
+    @Test
+    fun `can extract title from frontmatter`() {
+        val metadata = MarkdownConversion().convert(Markdown("""
+---
+title: Sparta rules
+---
+This is *Sparta*""".trimIndent())).metadata
+        assertThat(metadata, equalTo(PageMetadata(title = "Sparta rules")))
     }
 }
 
