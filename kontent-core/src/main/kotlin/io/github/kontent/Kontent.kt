@@ -5,6 +5,7 @@ import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
 import io.github.kontent.asset.FileSystemAssetsSource
 import io.github.kontent.markdown.FileSystemMarkdownSource
+import io.github.kontent.markdown.MarkdownSourceFile
 import io.github.kontent.templating.HandlebarsTemplating
 import org.http4k.core.Uri
 
@@ -14,13 +15,13 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     fun build(): Site {
         val assets = FileSystemAssetsSource(configuration.assetsPath).retrieve()
         val markdownSource = FileSystemMarkdownSource(configuration.sourcePath)
+        val markdowns = markdownSource.listAllSources(configuration.urlMappings, configuration.standalonePages)
 
-        val pageSources = markdownSource.listAllSources(configuration.urlMappings, configuration.standalonePages)
-        val navigation = pageSources.map { it.targetUri }.toList().generateNavigation()
+        val navigation = markdowns.map(MarkdownSourceFile::targetUri).toList().generateNavigation()
 
          val templating = HandlebarsTemplating(configuration.themePath, assets)
 
-        val pages = pageSources.map { templating.renderPage(it.targetUri, markdownSource.read(it), navigation)}
+        val pages = markdowns.map { templating.renderPage(it.targetUri, markdownSource.read(it), navigation)}
 
         val allPages = pages.toList()
 
