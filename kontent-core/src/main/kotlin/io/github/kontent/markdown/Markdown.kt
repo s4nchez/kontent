@@ -1,6 +1,8 @@
 package io.github.kontent.markdown
 
 import io.github.kontent.Html
+import io.github.kontent.MarkdownResult
+import io.github.kontent.PageMetadata
 import io.github.kontent.code.CodeFetcher
 import io.github.kontent.code.CodeFetcher.Companion.NoOp
 import io.github.kontent.code.CodeLink
@@ -21,10 +23,10 @@ class MarkdownConversion(fetcher: CodeFetcher = NoOp) {
             .extensions(listOf(YamlFrontMatterExtension.create()))
             .postProcessor(CodeFetchingPostProcessor(fetcher))
             .build()
-    fun convert(markdown: Markdown): Html {
+    fun convert(markdown: Markdown): MarkdownResult {
         val document: Node = parser.parse(markdown.raw)
         val renderer = HtmlRenderer.builder().build()
-        return Html(renderer.render(document))
+        return MarkdownResult(Html(renderer.render(document)), PageMetadata())
     }
 }
 

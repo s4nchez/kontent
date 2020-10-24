@@ -63,9 +63,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
 
     private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template, navigation: Navigation): Page {
         val markdown = source.read(sourceFile)
-        val contentHtml = markdownConversion.convert(markdown)
+        val result = markdownConversion.convert(markdown)
         val pageModel = PageModel(
-                content = contentHtml.raw,
+                content = result.html.raw,
                 nav = navigation
         )
         val compiledPage = template.apply(pageModel)
@@ -88,7 +88,11 @@ data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
 
 data class XmlDocument(val raw: String)
 
+data class MarkdownResult(val html: Html, val metadata: PageMetadata)
+
 data class Page(val uri: Uri, val content: Html)
+
+data class PageMetadata(val title:String? = null)
 
 data class Html(val raw: String)
 

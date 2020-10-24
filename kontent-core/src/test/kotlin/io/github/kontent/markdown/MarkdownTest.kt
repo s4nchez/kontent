@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class MarkdownTest {
     @Test
     fun `can convert file`() {
-        val document: Html = MarkdownConversion().convert(Markdown("This is *Sparta*"))
+        val document: Html = MarkdownConversion().convert(Markdown("This is *Sparta*")).html
         assertThat(document, equalTo(Html("<p>This is <em>Sparta</em></p>\n")))
     }
 
@@ -30,7 +30,7 @@ class MarkdownTest {
 title: A page
 layout: new
 ---
-This is *Sparta*""".trimIndent()))
+This is *Sparta*""".trimIndent())).html
         assertThat(document, equalTo(Html("<p>This is <em>Sparta</em></p>\n")))
     }
 
@@ -40,7 +40,7 @@ This is *Sparta*""".trimIndent()))
         ```kotlin
         val a = "bob"
         ```
-        """.trimIndent()))
+        """.trimIndent())).html
 
         assertThat(document, equalTo(Html("<pre><code class=\"language-kotlin\">val a = &quot;bob&quot;\n" +
             "</code></pre>\n")))
@@ -59,7 +59,7 @@ This is *Sparta*""".trimIndent()))
         <a href="https://github.com/http4k/http4k/blob/master/src/docs/quickstart/example.kt" data-kontent-fetch="github" data-kontent-lang="kotlin">this code</a>
         
         thank you
-        """.trimIndent()))
+        """.trimIndent())).html
 
         approver.assertApproved(document.raw)
     }
