@@ -1,5 +1,7 @@
 package io.github.kontent
 
+import io.github.kontent.NavigationGenerator.generateNavigation
+import io.github.kontent.markdown.MarkdownSourceFile
 import org.http4k.core.Uri
 
 data class Navigation(val items: List<NavigationItem>)
@@ -11,10 +13,13 @@ data class NavigationItem(
     val children: List<NavigationItem> = listOf()
 )
 
+fun List<MarkdownSourceFile>.navigation() =
+        generateNavigation(map(MarkdownSourceFile::targetUri).toList())
+
 object NavigationGenerator {
 
-    fun List<Uri>.generateNavigation(): Navigation = Navigation(
-        exceptRoot()
+    fun generateNavigation(list: List<Uri>): Navigation = Navigation(
+        list.exceptRoot()
             .map { it.toNavigationItem() }
             .addIntermediateNavigationItems()
             .sortedBy { it.uri.path }

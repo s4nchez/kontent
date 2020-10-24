@@ -16,7 +16,7 @@ internal class NavigationTest {
                 page("/code-of-conduct")
         )
 
-        assertThat(pages.generateNavigation(),
+        assertThat(generateNavigation(pages),
             equalTo(Navigation(listOf(
                 NavigationItem("About", Uri.of("/about"), true),
                 NavigationItem("Code of conduct", Uri.of("/code-of-conduct"), true)
@@ -34,7 +34,7 @@ internal class NavigationTest {
                 page("/about/code-of-conduct")
         )
 
-        assertThat(pages.generateNavigation(),
+        assertThat(generateNavigation(pages),
             equalTo(Navigation(listOf(
                 NavigationItem("About", Uri.of("/about"), false, listOf(
                     NavigationItem("Code of conduct", Uri.of("/about/code-of-conduct"), true),
@@ -58,7 +58,7 @@ internal class NavigationTest {
                 page("/stay/bar/e"),
                 page("/stay/bar/f")
         )
-        assertThat(pages.generateNavigation(),
+        assertThat(generateNavigation(pages),
             equalTo(
                 Navigation(listOf(
                     NavigationItem("Go", Uri.of("/go"), false,
