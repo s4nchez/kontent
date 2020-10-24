@@ -14,16 +14,11 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val assets = FileSystemAssetsSource(configuration.assetsPath).retrieve()
         val markdownSource = FileSystemMarkdownSource(configuration.sourcePath)
         val markdowns = markdownSource.listAllSources(configuration.urlMappings, configuration.standalonePages)
+        val templating = HandlebarsTemplating(configuration.themePath, assets, markdowns.navigation())
 
-        val navigation = markdowns.navigation()
+        val pages = markdowns.map { templating.renderPage(it.targetUri, markdownSource.read(it)) }
 
-        val templating = HandlebarsTemplating(configuration.themePath, assets)
-
-        val pages = markdowns.map { templating.renderPage(it.targetUri, markdownSource.read(it), navigation)}
-
-        val allPages = pages.toList()
-
-        return Site(allPages, configuration.baseUri, assets)
+        return Site(pages, configuration.baseUri, assets)
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
     }
 }
@@ -38,7 +33,7 @@ data class MarkdownResult(val html: Html, val metadata: PageMetadata)
 
 data class Page(val uri: Uri, val content: Html)
 
-data class PageMetadata(val title:String? = null)
+data class PageMetadata(val title: String? = null)
 
 data class Html(val raw: String)
 
