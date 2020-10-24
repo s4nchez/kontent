@@ -1,5 +1,7 @@
 package io.github.kontent
 
+import io.github.kontent.models.Sitemap
+import io.github.kontent.models.Url
 import org.http4k.core.*
 import org.http4k.core.ContentType.Companion.APPLICATION_XML
 import org.http4k.core.ContentType.Companion.TEXT_HTML
@@ -7,7 +9,10 @@ import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
 import org.http4k.filter.ServerFilters
 import org.http4k.lens.Header.CONTENT_TYPE
+import org.simpleframework.xml.Serializer
+import org.simpleframework.xml.core.Persister
 import java.io.File
+import java.io.StringWriter
 
 
 fun Kontent.asHttpHandler(): HttpHandler = ServerFilters.CatchAll().then { request -> build().asHttpHandler()(request) }
@@ -35,4 +40,13 @@ fun Site.asHttpHandler(): HttpHandler {
             else -> Response(NOT_FOUND)
         }
     }
+}
+
+private fun Site.sitemap(): XmlDocument {
+    val serializer: Serializer = Persister()
+    val example = Sitemap(urls = pages.map { Url(baseUri.path(it.uri.path).toString()) })
+    val result = StringWriter()
+
+    serializer.write(example, result)
+    return XmlDocument(result.toString())
 }
