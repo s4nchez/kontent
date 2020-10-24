@@ -11,4 +11,5 @@ Navigation(items&#x3D;[NavigationItem(name&#x3D;Foo, uri&#x3D;/foo, page&#x3D;fa
 </li>
 </ul>
 </nav>
+<h1>My page</h1>
 <p><em>my content</em></p>

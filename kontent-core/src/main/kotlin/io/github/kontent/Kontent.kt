@@ -66,7 +66,8 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val result = markdownConversion.convert(markdown)
         val pageModel = PageModel(
                 content = result.html.raw,
-                nav = navigation
+                nav = navigation,
+                title = result.metadata.title
         )
         val compiledPage = template.apply(pageModel)
         return Page(sourceFile.targetUri, Html(compiledPage))
@@ -82,7 +83,7 @@ fun Site.sitemap(): XmlDocument {
     return XmlDocument(result.toString())
 }
 
-data class PageModel(val content: String, val nav: Navigation)
+data class PageModel(val content: String, val nav: Navigation, val title: String?)
 
 data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
 
