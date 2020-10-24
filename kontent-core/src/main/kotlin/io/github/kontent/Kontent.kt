@@ -38,7 +38,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         )
 
         val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value)).apply {
-            registerHelper("asset", Helper<String> { context, _ -> assets.withFingerprint(context) })
+            registerHelper("asset", Helper<String> { path, _ -> assets.findByPath(path)?.uriWithFingerprint })
             infiniteLoops(true)
         }
 
