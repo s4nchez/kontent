@@ -1,5 +1,6 @@
 package io.github.kontent
 
+import org.http4k.core.Uri
 import java.io.File
 
 fun Site.exportFiles(targetDirectory: TargetDirectory) {
@@ -17,3 +18,8 @@ fun Site.exportFiles(targetDirectory: TargetDirectory) {
 }
 
 data class TargetDirectory(val value: String) : ValidatedPath(value)
+
+fun File.resolveAssetUri(assetsPath: AssetsPath) = Uri.of(relativePath(assetsPath))
+
+fun File.relativePath(basePath: ValidatedPath) =
+        "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")

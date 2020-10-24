@@ -18,7 +18,6 @@ import org.http4k.client.JavaHttpClient
 import org.http4k.core.Uri
 import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
-import java.io.File
 import java.io.StringWriter
 
 
@@ -90,9 +89,3 @@ data class Html(val raw: String)
 data class Asset(val uri: Uri, val mapsTo: AssetPath, val uriWithFingerprint: Uri)
 
 data class AssetPath(val value: String) : ValidatedPath(value)
-
-fun File.resolveAssetUri(assetsPath: AssetsPath) = Uri.of(relativePath(assetsPath))
-
-fun File.relativePath(basePath: ValidatedPath) =
-    "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
-
