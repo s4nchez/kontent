@@ -2,6 +2,7 @@ package io.github.kontent.markdown
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import io.github.kontent.configuration
 import org.http4k.core.Uri
 import org.junit.jupiter.api.Test
 
@@ -19,7 +20,7 @@ abstract class MarkdownSourceContract {
 
     @Test
     fun `list all markdown files`() {
-        val files = source.listAllSources(emptyMap<Uri,Uri>())
+        val files = source.listAllSources(emptyMap<Uri,Uri>(), configuration.standalonePages)
 
         assertThat(files.toSet(), equalTo(setOf(
             MarkdownSourceFile(sourceUriFor("/www/index.md"), Uri.of("/")),

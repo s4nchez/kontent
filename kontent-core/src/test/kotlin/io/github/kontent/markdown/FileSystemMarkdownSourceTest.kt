@@ -18,7 +18,7 @@ class FileSystemMarkdownSourceTest : MarkdownSourceContract() {
         }
     }
 
-    override val source: MarkdownSource = FileSystemMarkdownSource(configuration.copy(sourcePath = ContentSourcePath(testDir.absolutePath + "/www")))
+    override val source: MarkdownSource = FileSystemMarkdownSource(configuration.copy(sourcePath = ContentSourcePath(testDir.absolutePath + "/www")).sourcePath)
 
     override fun sourceUriFor(relativePath: String) = Uri.of(testDir.absolutePath + relativePath)
 }

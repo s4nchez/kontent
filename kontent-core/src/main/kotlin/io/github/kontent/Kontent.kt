@@ -33,9 +33,9 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             infiniteLoops(true)
         }
 
-        val markdownSource = FileSystemMarkdownSource(configuration)
+        val markdownSource = FileSystemMarkdownSource(configuration.sourcePath)
 
-        val pageSources = markdownSource.listAllSources(configuration.urlMappings)
+        val pageSources = markdownSource.listAllSources(configuration.urlMappings, configuration.standalonePages)
 
         val navigation = pageSources.map { it.targetUri }.toList().generateNavigation()
 
@@ -93,10 +93,6 @@ data class AssetPath(val value: String) : ValidatedPath(value)
 
 fun File.resolveAssetUri(assetsPath: AssetsPath) = Uri.of(relativePath(assetsPath))
 
-fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md").removeSuffix("/index").ensureFirstSlash())
-
-private fun String.ensureFirstSlash() = if(startsWith("/")) this else "/"+this
-
-private fun File.relativePath(basePath: ValidatedPath) =
+fun File.relativePath(basePath: ValidatedPath) =
     "/" + this.path.replace(basePath.path, "").replace("^[/]*".toRegex(), "")
 
