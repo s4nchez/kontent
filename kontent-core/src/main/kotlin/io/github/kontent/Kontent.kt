@@ -55,7 +55,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
     private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template): Page {
         val markdown = source.read(sourceFile)
         val contentHtml = markdownConversion.convert(markdown)
-        val compiledPage = template.apply(mapOf("content" to contentHtml.raw))
+        val compiledPage = template.apply(PageModel(contentHtml.raw))
         return Page(sourceFile.targetUri, Html(compiledPage))
     }
 }
@@ -68,6 +68,8 @@ fun Site.sitemap(): XmlDocument {
     serializer.write(example, result)
     return XmlDocument(result.toString())
 }
+
+data class PageModel(val content:String)
 
 data class Site(val pages: List<Page>, val baseUri: Uri, val assets: Assets)
 
