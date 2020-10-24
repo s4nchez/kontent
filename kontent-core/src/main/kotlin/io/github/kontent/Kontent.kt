@@ -1,20 +1,13 @@
 package io.github.kontent
 
-import com.github.jknack.handlebars.Handlebars
-import com.github.jknack.handlebars.Helper
-import com.github.jknack.handlebars.Template
-import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.github.kontent.NavigationGenerator.generateNavigation
 import io.github.kontent.OperationalEvents.Companion.NoOp
 import io.github.kontent.asset.Assets
 import io.github.kontent.asset.FileSystemAssetsSource
-import io.github.kontent.code.HttpCodeFetcher
 import io.github.kontent.markdown.FileSystemMarkdownSource
-import io.github.kontent.markdown.MarkdownConversion
-import io.github.kontent.markdown.MarkdownSourceFile
 import io.github.kontent.models.Sitemap
 import io.github.kontent.models.Url
-import org.http4k.client.JavaHttpClient
+import io.github.kontent.templating.HandlebarsTemplating
 import org.http4k.core.Uri
 import org.simpleframework.xml.Serializer
 import org.simpleframework.xml.core.Persister
@@ -22,44 +15,25 @@ import java.io.StringWriter
 
 
 class Kontent(private val configuration: SiteConfiguration, private val events: OperationalEvents = NoOp) {
-    private val markdownConversion = MarkdownConversion(HttpCodeFetcher(JavaHttpClient()))
 
     fun build(): Site {
         val assets = FileSystemAssetsSource(configuration.assetsPath).retrieve()
-
-        val handlebars = Handlebars(FileTemplateLoader(configuration.themePath.value)).apply {
-            registerHelper("asset", Helper<String> { path, _ -> assets.findByPath(path)?.uriWithFingerprint })
-            infiniteLoops(true)
-        }
-
         val markdownSource = FileSystemMarkdownSource(configuration.sourcePath)
 
         val pageSources = markdownSource.listAllSources(configuration.urlMappings, configuration.standalonePages)
-
         val navigation = pageSources.map { it.targetUri }.toList().generateNavigation()
 
-        val template: Template = handlebars.compile("index")
+         val templating = HandlebarsTemplating(configuration.themePath, assets)
+
         val pages = pageSources
             .map {
-                generatePage(markdownSource, it, template, navigation)
+                templating.renderPage(it.targetUri, markdownSource.read(it), navigation)
             }
 
         val allPages = pages.toList()
 
         return Site(allPages, configuration.baseUri, assets)
             .also { events.emit(BuildSucceeded(it.pages.size, it.assets.size)) }
-    }
-
-    private fun generatePage(source: FileSystemMarkdownSource, sourceFile: MarkdownSourceFile, template: Template, navigation: Navigation): Page {
-        val markdown = source.read(sourceFile)
-        val result = markdownConversion.convert(markdown)
-        val pageModel = PageModel(
-                content = result.html.raw,
-                nav = navigation,
-                title = result.metadata.title
-        )
-        val compiledPage = template.apply(pageModel)
-        return Page(sourceFile.targetUri, Html(compiledPage))
     }
 }
 
