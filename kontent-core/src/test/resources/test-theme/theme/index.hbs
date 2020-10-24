@@ -1,7 +1,7 @@
 {{ nav }}
 <nav><ul>
 {{#each nav.items ~}}
-    <li>{{ name }}</li>
+    {{> partials/navitem }}
 {{/each ~}}
 </ul>
 </nav>
