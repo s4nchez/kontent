@@ -1,14 +1,10 @@
 package io.github.kontent
 
+import org.http4k.core.*
 import org.http4k.core.ContentType.Companion.APPLICATION_XML
 import org.http4k.core.ContentType.Companion.TEXT_HTML
-import org.http4k.core.HttpHandler
-import org.http4k.core.MimeTypes
-import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
-import org.http4k.core.then
-import org.http4k.core.with
 import org.http4k.filter.ServerFilters
 import org.http4k.lens.Header.CONTENT_TYPE
 import java.io.File
@@ -18,7 +14,7 @@ fun Kontent.asHttpHandler(): HttpHandler = ServerFilters.CatchAll().then { reque
 
 fun Site.asHttpHandler(): HttpHandler {
     val allPages = pages.map { it.uri.path to it }.toMap()
-    val staticContent = assets.assetsWithFingerprint()
+    val staticContent = assets.map { it.uriWithFingerprint.path to it }.toMap()
 
     return { request ->
         when (request.uri.path) {
