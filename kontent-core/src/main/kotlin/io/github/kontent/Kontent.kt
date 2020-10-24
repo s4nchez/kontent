@@ -33,14 +33,13 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
             infiniteLoops(true)
         }
 
-        val template: Template = handlebars.compile("index")
-
         val markdownSource = FileSystemMarkdownSource(configuration)
 
         val pageSources = markdownSource.listAllSources(configuration.urlMappings)
 
         val navigation = pageSources.map { it.targetUri }.toList().generateNavigation()
 
+        val template: Template = handlebars.compile("index")
         val pages = pageSources
             .map {
                 generatePage(markdownSource, it, template, navigation)
