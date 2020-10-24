@@ -21,13 +21,13 @@ class UriTest {
 
     @Test
     fun `resolve basic asset Uri`() {
-        assertThat(asset("/a-file.jpg").resolveAssetUri(configuration),
+        assertThat(asset("/a-file.jpg").resolveAssetUri(configuration.assetsPath),
             equalTo(Uri.of("/a-file.jpg")))
     }
 
     @Test
     fun `resolve nested asset Uri`() {
-        assertThat(asset("/some/other-file.jpg").resolveAssetUri(configuration),
+        assertThat(asset("/some/other-file.jpg").resolveAssetUri(configuration.assetsPath),
             equalTo(Uri.of("/some/other-file.jpg")))
     }
 

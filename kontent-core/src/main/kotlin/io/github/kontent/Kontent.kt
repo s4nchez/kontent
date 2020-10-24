@@ -31,7 +31,7 @@ class Kontent(private val configuration: SiteConfiguration, private val events: 
         val assets = Assets(File(configuration.assetsPath.value).walkTopDown()
             .filterNot { it.isDirectory }
             .map {
-                val assetUri = it.resolveAssetUri(configuration)
+                val assetUri = it.resolveAssetUri(configuration.assetsPath)
                 Asset(assetUri, AssetPath(it.absolutePath),
                     fingerprint.generateFingerprintedUri(File(it.absolutePath).inputStream(), assetUri)) }
             .toList()
@@ -101,7 +101,7 @@ data class Asset(val uri: Uri, val mapsTo: AssetPath, val uriWithFingerprint: Ur
 
 data class AssetPath(val value: String) : ValidatedPath(value)
 
-fun File.resolveAssetUri(config: SiteConfiguration) = Uri.of(relativePath(config.assetsPath))
+fun File.resolveAssetUri(assetsPath: AssetsPath) = Uri.of(relativePath(assetsPath))
 
 fun File.resolvePageUri(config: SiteConfiguration) = Uri.of(relativePath(config.sourcePath).removeSuffix(".md").removeSuffix("/index").ensureFirstSlash())
 
