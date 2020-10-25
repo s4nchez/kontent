@@ -44,7 +44,9 @@ object NavigationGenerator {
 
     private fun NavigationItem.segments() = uri.path.split("/").filterNot(String::isBlank)
 
-    private fun Uri.name() = path.split("/").filterNot(String::isBlank).last().capitalize().replace("-", " ")
+    private fun Uri.name() = path.split("/")
+        .filterNot(String::isBlank).last()
+        .capitalize().replace("[-_]".toRegex(), " ")
 
     private fun Uri.parent(): Uri? =
         if (isRoot()) null

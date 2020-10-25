@@ -12,13 +12,13 @@ internal class NavigationTest {
     fun `single level`() {
         val pages = listOf(
                 page("/"),
-                page("/about"),
+                page("/about_us"),
                 page("/code-of-conduct")
         )
 
         assertThat(generateNavigation(pages),
             equalTo(Navigation(listOf(
-                NavigationItem("About", Uri.of("/about"), true, level = 0),
+                NavigationItem("About us", Uri.of("/about_us"), true, level = 0),
                 NavigationItem("Code of conduct", Uri.of("/code-of-conduct"), true, level = 0)
             )))
         )
