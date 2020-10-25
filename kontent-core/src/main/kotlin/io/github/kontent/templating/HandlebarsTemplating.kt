@@ -23,6 +23,7 @@ class HandlebarsTemplating(themePath: ThemePath, assets: Assets, private val nav
     private val handlebars = Handlebars(FileTemplateLoader(themePath.value)).apply {
         registerHelper("asset", Helper<String> { path, _ -> assets.findByPath(path)?.uriWithFingerprint })
         infiniteLoops(true)
+        cache.setReload(true)
     }
 
     private val template: Template = handlebars.compile("index")
