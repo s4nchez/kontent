@@ -10,11 +10,12 @@ data class NavigationItem(
     val name: String,
     val uri: Uri,
     val page: Boolean = false,
-    val children: List<NavigationItem> = listOf()
+    val children: List<NavigationItem> = listOf(),
+    val level: Number = uri.path.removePrefix("/").removeSuffix("/").count { it == '/' }
 )
 
 fun List<MarkdownSourceFile>.navigation() =
-        generateNavigation(map(MarkdownSourceFile::targetUri).toList())
+    generateNavigation(map(MarkdownSourceFile::targetUri).toList())
 
 object NavigationGenerator {
 
