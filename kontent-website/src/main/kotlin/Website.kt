@@ -39,7 +39,7 @@ class Serve {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            site.asHttpHandler().asServer(SunHttp(8000)).start()
+            site.build().asHttpHandler().asServer(SunHttp(8000)).start()
         }
     }
 }
