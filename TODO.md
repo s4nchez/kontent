@@ -4,7 +4,7 @@
 * allow plain HTML pages
 * "hot reload" mode for regeneration on source changes
 * page history tracking + redirection
-* "debug" web ui: new server on different port showing the internals of the website build
+* "debug" web ui: new server on different port showing the internals of the build
 
 # DONE
 * expose frontmatter to template
