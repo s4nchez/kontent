@@ -11,7 +11,8 @@ data class NavigationItem(
     val uri: Uri,
     val page: Boolean = false,
     val children: List<NavigationItem> = listOf(),
-    val level: Number = uri.path.removePrefix("/").removeSuffix("/").count { it == '/' }
+    val level: Number = uri.path.removePrefix("/").removeSuffix("/").count { it == '/' },
+    val root: Boolean = level == 0
 )
 
 fun List<MarkdownSourceFile>.navigation() =
