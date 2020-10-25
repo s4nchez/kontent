@@ -1,4 +1,3 @@
-Navigation(items&#x3D;[NavigationItem(name&#x3D;Foo, uri&#x3D;/foo, page&#x3D;false, children&#x3D;[NavigationItem(name&#x3D;Bar, uri&#x3D;/foo/bar, page&#x3D;true, children&#x3D;[]), NavigationItem(name&#x3D;Xyz, uri&#x3D;/foo/xyz, page&#x3D;true, children&#x3D;[])])])
 <nav>
 <ul>
 <li>Foo
